@@ -1,5 +1,7 @@
 package com.blueDragon.Convenience.Model;
 
+import com.blueDragon.Convenience.Converter.ConvenienceTypeListConverter;
+import com.blueDragon.Convenience.Converter.FoodTypeListConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,13 +24,12 @@ public class Product {
     @Column
     private String price;
 
-    @Enumerated(value = EnumType.STRING)
-    private List<ConvenienceType> availableAt; // 살 수 있는 편의점
+    @Convert(converter = ConvenienceTypeListConverter.class) // 컨버터 적용
+    private List<ConvenienceType> availableAt;
 
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = FoodTypeListConverter.class) // 컨버터 적용
     private List<FoodType> foodTypes;
 
     @Column
-    private String imgUrl;
+    private String imageUrl;
 }
-

@@ -33,14 +33,14 @@ public class CUProductService {
         try {
             for (int depth3 = 1; depth3 <= 6; depth3++) {
                 // depth3가 5일 때 가공식사 항목 클릭
-                if (depth3 == 5) {
-                    driver.get(BASE_URL + "5");
+                if (depth3 == 2) {
+                    driver.get(BASE_URL + "2");
                     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
                     try {
                         // JavaScript를 사용해 식품 카테고리 강제 선택
                         JavascriptExecutor js = (JavascriptExecutor) driver;
-                        js.executeScript("document.querySelector('li.eventInfo_02 a').click();");
+                        js.executeScript("document.querySelector('li.eventInfo_01 a').click();");
 
                         // 클릭 후 안정화를 위해 대기
                         Thread.sleep(3000);
@@ -89,8 +89,10 @@ public class CUProductService {
                 }
 
                 List<Product> products = new ArrayList<>();
+                int startIndex = Math.max(productElements.size() - 50, 0);
+                List<WebElement> last50Elements = productElements.subList(startIndex, productElements.size());
 
-                for (WebElement productElement : productElements) {
+                for (WebElement productElement : last50Elements) {
                     try {
                         String fullName = productElement.findElement(By.cssSelector(".prod_text .name p")).getText();
                         String priceText = productElement.findElement(By.cssSelector(".prod_text .price strong")).getText();
@@ -107,6 +109,9 @@ public class CUProductService {
                             System.err.println("Warning: Product price is empty. Skipping this product.");
                             continue;
                         }
+                        // 이름에서 ")" 이후 문자열만 저장
+                        int index = fullName.indexOf(")");
+                        fullName = (index != -1) ? fullName.substring(index + 1).trim() : fullName;
 
                         priceText = priceText.isEmpty() ? "0" : priceText;
                         imgUrl = imgUrl.isEmpty() ? "이미지 없음" : (imgUrl.startsWith("https:") ? imgUrl : "https:" + imgUrl);
@@ -125,7 +130,7 @@ public class CUProductService {
                         if (foodType != null) {
                             Product product = Product.builder()
                                     .price(priceText)
-                                    .imgUrl(imgUrl)
+                                    .imageUrl(imgUrl)
                                     .name(fullName)
                                     .availableAt(availableAt)
                                     .foodTypes(List.of(foodType))
