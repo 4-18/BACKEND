@@ -32,4 +32,19 @@ public class Product {
 
     @Column
     private String imageUrl;
+
+    public static Product customBuilder(String name, String price, List<ConvenienceType> availableAt, List<FoodType> foodTypes, String imageUrl) {
+        return Product.builder()
+                .name(name)
+                .price(price)
+                .availableAt(availableAt)
+                .foodTypes(foodTypes)
+                .imageUrl(imageUrl)
+                .build();
+    }
+
+    public Product setAvailableAt(List<ConvenienceType> availableAt) {
+        this.availableAt = availableAt;
+        return this;
+    }
 }
