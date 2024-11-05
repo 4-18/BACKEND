@@ -4,6 +4,7 @@ import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import com.blueDragon.Convenience.Service.CUProductService;
 import com.blueDragon.Convenience.Service.GSProductService;
+import com.blueDragon.Convenience.Service.SevenProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ProductController {
     private final CUProductService cuProductService;
     private final GSProductService gsProductService;
+    private final SevenProductService sevenProductService;
     private final ProductRepository productRepository;
 
     @GetMapping("/products")
@@ -34,6 +36,11 @@ public class ProductController {
     @GetMapping("/pb-products/gs")
     public void getGSProducts() {
         gsProductService.crawlAndSaveProducts();
+    }
+
+    @GetMapping("/pb-products/seven")
+    public void getSevenProducts() {
+        sevenProductService.crawlAndSaveProducts();
     }
 
     @GetMapping("/all-products")
