@@ -38,7 +38,9 @@ dependencies {
 	//정적 웹 크롤링에 사용
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+	implementation 'org.seleniumhq.selenium:selenium-java:4.26.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.3' // or the latest version
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {

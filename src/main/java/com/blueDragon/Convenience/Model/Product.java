@@ -20,12 +20,15 @@ public class Product {
     private String name;
 
     @Column
-    private Integer price;
+    private String price;
 
     @Column
     private List<ConvenienceType> availableAt; // 살 수 있는 편의점
 
     @Column
     private List<FoodType> foodTypes;
+
+    @Column
+    private String imgUrl;
 }
 
