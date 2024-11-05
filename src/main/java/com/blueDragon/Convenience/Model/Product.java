@@ -22,10 +22,10 @@ public class Product {
     @Column
     private String price;
 
-    @Column
+    @Enumerated(value = EnumType.STRING)
     private List<ConvenienceType> availableAt; // 살 수 있는 편의점
 
-    @Column
+    @Enumerated(value = EnumType.STRING)
     private List<FoodType> foodTypes;
 
     @Column

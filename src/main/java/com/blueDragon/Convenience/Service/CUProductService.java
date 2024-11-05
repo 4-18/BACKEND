@@ -6,12 +6,12 @@ import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,73 +25,122 @@ public class CUProductService {
     private final ProductRepository productRepository;
     private static final String BASE_URL = "https://cu.bgfretail.com/product/product.do?category=product&depth2=4&depth3=";
 
+    @Transactional // 트랜잭션 사용
     public List<Product> crawlAndSaveProducts() {
-        List<Product> products = new ArrayList<>();
+        List<Product> allProducts = new ArrayList<>();
         WebDriver driver = ChromeDriver.builder().build();
 
         try {
             for (int depth3 = 1; depth3 <= 6; depth3++) {
+                // depth3가 5일 때 가공식사 항목 클릭
+                if (depth3 == 5) {
+                    driver.get(BASE_URL + "5");
+                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-                String url = BASE_URL + depth3;
-                driver.get(url);
+                    try {
+                        // JavaScript를 사용해 식품 카테고리 강제 선택
+                        JavascriptExecutor js = (JavascriptExecutor) driver;
+                        js.executeScript("document.querySelector('li.eventInfo_02 a').click();");
 
-                // Load More 버튼 클릭
+                        // 클릭 후 안정화를 위해 대기
+                        Thread.sleep(3000);
+
+                        // 카테고리가 활성화되었는지 확인
+                        WebElement activeCategory = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("li.eventInfo_02.on")));
+                        if (activeCategory == null) {
+                            System.err.println("Category did not switch to '가공식사'");
+                        }
+                    } catch (TimeoutException e) {
+                        System.err.println("Timed out waiting for '가공식사' category to load and activate.");
+                    }
+                } else {
+                    String url = BASE_URL + depth3;
+                    driver.get(url);
+                }
+
+                // 페이지 로드 후 안정화 대기
+                Thread.sleep(7000); // 충분한 대기 시간 설정
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".prodListWrap")));
+
+                // Load More 버튼 반복 클릭
                 while (true) {
                     try {
                         WebElement loadMoreButton = driver.findElement(By.cssSelector(".prodListBtn-w a"));
                         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", loadMoreButton);
-                        Thread.sleep(5000);
+                        Thread.sleep(4000);
                     } catch (NoSuchElementException e) {
                         break;
                     }
                 }
-                Thread.sleep(5000);
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-                wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".prodListWrap > ul")));
 
-                List<WebElement> productElements = driver.findElements(By.cssSelector("li.prod_list"));
+                Thread.sleep(3000);  // 추가 안정화 대기
+
+                List<WebElement> productElements;
+                System.out.println("여기까진 옴?");
+                try {
+                    System.out.println("대기 시작 ;;;");
+                    productElements = driver.findElements(By.cssSelector("li.prod_list"));
+                    System.out.println("모든 productElements 로드 완료" + productElements);
+                } catch (TimeoutException e) {
+                    System.err.println("Timed out waiting for product elements to load.");
+                    continue;
+                }
+
+                List<Product> products = new ArrayList<>();
+
                 for (WebElement productElement : productElements) {
-                    String fullName = productElement.findElement(By.cssSelector(".prod_text .name p")).getText();
-                    String priceText = productElement.findElement(By.cssSelector(".prod_text .price strong")).getText();
-                    String imgUrl = productElement.findElement(By.cssSelector(".prod_img img")).getAttribute("src");
+                    try {
+                        String fullName = productElement.findElement(By.cssSelector(".prod_text .name p")).getText();
+                        String priceText = productElement.findElement(By.cssSelector(".prod_text .price strong")).getText();
+                        String imgUrl = productElement.findElement(By.cssSelector(".prod_img img")).getAttribute("src");
 
-// fullName이 빈 문자열인 경우 "이름 없음"으로 설정하고, ")" 이후의 문자열만 저장
-                    if (!fullName.isEmpty()) {
-                        int index = fullName.indexOf(")");
-                        fullName = (index != -1) ? fullName.substring(index + 1).trim() : fullName; // ")" 이후의 문자열만 저장
-                    } else {
-                        fullName = "이름 없음";
-                    }
+                        // 이름이 없으면 건너뜀
+                        if (fullName.isEmpty()) {
+                            System.err.println("Warning: Product name is empty. Skipping this product.");
+                            continue;
+                        }
 
-// 가격과 이미지 URL이 비어 있는 경우 기본값 설정
-                    priceText = priceText.isEmpty() ? "0" : priceText;
-                    imgUrl = imgUrl.isEmpty() ? "이미지 없음" : "https:" + imgUrl;
-                    priceText = priceText.isEmpty() ? "0" : priceText;
-                    imgUrl = imgUrl.isEmpty() ? "이미지 없음" : "https:" + imgUrl;
+                        // 가격이 없으면 건너뜀
+                        if (priceText.isEmpty()) {
+                            System.err.println("Warning: Product price is empty. Skipping this product.");
+                            continue;
+                        }
 
-                    List<ConvenienceType> availableAt = List.of(ConvenienceType.CU);
-                    // depth3 값에 따라 FoodType 설정
-                    FoodType foodType;
-                    if (depth3 == 3 || depth3 == 4) {
-                        foodType = FoodType.간식류;
-                    } else if (depth3 == 6) {
-                        foodType = FoodType.음료류;
-                    } else {
-                        foodType = classifyFoodTypeByKeywords(fullName); // 나머지 경우는 키워드 기반 분류
-                    }
+                        priceText = priceText.isEmpty() ? "0" : priceText;
+                        imgUrl = imgUrl.isEmpty() ? "이미지 없음" : (imgUrl.startsWith("https:") ? imgUrl : "https:" + imgUrl);
 
-                    if (foodType != null) {
-                        Product product = Product.builder()
-                                .price(priceText)
-                                .imgUrl(imgUrl)
-                                .name(fullName)
-                                .availableAt(availableAt)
-                                .foodTypes(List.of(foodType))
-                                .build();
-                        productRepository.save(product);
-                        products.add(product);
+                        List<ConvenienceType> availableAt = List.of(ConvenienceType.CU);
+
+                        FoodType foodType;
+                        if (depth3 == 3 || depth3 == 4) {
+                            foodType = FoodType.간식류;
+                        } else if (depth3 == 6) {
+                            foodType = FoodType.음료류;
+                        } else {
+                            foodType = classifyFoodTypeByKeywords(fullName);
+                        }
+
+                        if (foodType != null) {
+                            Product product = Product.builder()
+                                    .price(priceText)
+                                    .imgUrl(imgUrl)
+                                    .name(fullName)
+                                    .availableAt(availableAt)
+                                    .foodTypes(List.of(foodType))
+                                    .build();
+                            products.add(product);
+                        }
+                    } catch (StaleElementReferenceException e) {
+                        System.err.println("Stale element encountered. Skipping this element.");
                     }
                 }
+
+                // 모든 Product 엔티티 일괄 저장 후 확인
+                productRepository.saveAll(products);
+                productRepository.flush();
+                allProducts.addAll(products);
             }
         } catch (Exception e) {
             System.err.println("An error occurred while processing products.");
@@ -100,15 +149,15 @@ public class CUProductService {
             driver.quit();
         }
 
-        return products;
+        return allProducts;
     }
 
     private FoodType classifyFoodTypeByKeywords(String productName) {
-        productName = productName.toLowerCase(); // 대소문자 구분 없이 비교하기 위해 소문자로 변환
+        productName = productName.toLowerCase();
 
-        if (productName.contains("면") || productName.contains("우동") || productName.contains("라면") || productName.contains("파스타")) {
+        if (productName.contains("면") || productName.contains("우동") || productName.contains("라면") || productName.contains("파스타") || productName.contains("스파게티") || productName.contains("왕뚜껑")) {
             return FoodType.면류;
-        } else if (productName.contains("밥") || productName.contains("덮밥") || productName.contains("비빔밥")) {
+        } else if (productName.contains("밥") || productName.contains("덮밥") || productName.contains("비빔밥") || productName.contains("주)") || productName.contains("김)") || productName.contains("도)")) {
             return FoodType.밥류;
         } else if (productName.contains("과자") || productName.contains("초코") || productName.contains("쿠키") || productName.contains("간식") || productName.contains("튀김")) {
             return FoodType.간식류;
@@ -116,12 +165,12 @@ public class CUProductService {
             return FoodType.음료류;
         } else if (productName.contains("다이어트") || productName.contains("샐러드") || productName.contains("저칼로리")) {
             return FoodType.다이어트류;
-        } else if (productName.contains("빵") || productName.contains("케익") || productName.contains("크로와상") || productName.contains("버거")) {
+        } else if (productName.contains("빵") || productName.contains("케익") || productName.contains("크로와상") || productName.contains("버거") || productName.contains("샌)") || productName.contains("햄)")) {
             return FoodType.빵류;
         } else if (productName.contains("야식") || productName.contains("족발") || productName.contains("닭발") || productName.contains("피자") || productName.contains("치킨")) {
             return FoodType.야식류;
         } else {
-            return null; // 분류할 수 없는 경우 null 반환
+            return FoodType.기타류;
         }
     }
 }
