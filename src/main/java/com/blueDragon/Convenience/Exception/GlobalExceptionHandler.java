@@ -1,7 +1,11 @@
 package com.blueDragon.Convenience.Exception;
 
 
+import com.blueDragon.Convenience.Code.ErrorCode;
+import com.blueDragon.Convenience.Dto.Response.ErrorResponseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice //API 리퀘스트로 넘어온 정보에 @Valid 라고만 적어주면 해당 요청이 맞게 들어왔는지
@@ -11,5 +15,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 
 public class GlobalExceptionHandler {
-
+    @ExceptionHandler(DuplicateLoginIdException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleDuplicateLoginIdException(final DuplicateLoginIdException e) {
+        return ResponseEntity
+                .status(ErrorCode.DUPLICATE_LOGIN_ID.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.DUPLICATE_LOGIN_ID));
+    }
 }
