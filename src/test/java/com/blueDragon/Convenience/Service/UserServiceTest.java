@@ -38,10 +38,8 @@ class UserServiceTest {
     void register_DuplicateLoginIdException() {
         // Given
         RegisterUserDto registerUserDto = new RegisterUserDto("testUser", "duplicateLoginId", "testPassword");
-
         // Mocking: 중복된 loginId가 존재한다고 가정
         when(userRepository.existsByLoginId(registerUserDto.getLoginId())).thenReturn(true);
-
         // When & Then
         assertThrows(DuplicateLoginIdException.class, () -> userService.register(registerUserDto));
         verify(userRepository, never()).save(any(User.class));
