@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -50,6 +51,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = customUserDetails.getUsername();
         String nickname = customUserDetails.getNickname();
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String accessToken = jwtUtil.createJwt("accessToken", username, nickname, 86400000L);
         String refreshToken = jwtUtil.createJwt("refreshToken", username, nickname, 86400000L);
 
@@ -57,7 +60,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("refreshToken", "Bearer " + refreshToken);
 
         User user = userRepository.findByUsername(username).orElse(null);
-
         ResponseDTO<?> responseDTO = new ResponseDTO<>(ResponseCode.SUCCESS_LOGIN, null);
 
         response.setContentType("application/json");
