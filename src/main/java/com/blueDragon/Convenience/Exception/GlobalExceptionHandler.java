@@ -2,7 +2,9 @@ package com.blueDragon.Convenience.Exception;
 
 
 import com.blueDragon.Convenience.Code.ErrorCode;
+import com.blueDragon.Convenience.Code.ResponseCode;
 import com.blueDragon.Convenience.Dto.Response.ErrorResponseDTO;
+import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -55,5 +57,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.PRODUCT_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.PRODUCT_NOT_FOUND));
+    }
+
+    @ExceptionHandler(EmptyException.class)
+    protected ResponseEntity<ResponseDTO<?>> handlePEmptyException(final EmptyException e) {
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_PRODUCT_EMPTY.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_PRODUCT_EMPTY, null));
     }
 }
