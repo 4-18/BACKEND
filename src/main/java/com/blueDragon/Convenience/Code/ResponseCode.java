@@ -32,6 +32,14 @@ public enum ResponseCode {
 
     SUCCESS_REACTION_REGISTER(HttpStatus.OK, "성공적으로 평가를 처리되었습니다."),
 
+    /**
+     * Product
+     */
+
+    SUCCESS_RETRIEVE_PRODUCT_LIST(HttpStatus.OK, "상품 리스트를 성공적으로 불러왔습니다."),
+    SUCCESS_PRODUCT_EMPTY(HttpStatus.OK, "요청은 성공했으나, 상품이 존재하지 않습니다."),
+
+
     ;
 
 
