@@ -16,10 +16,14 @@ public enum ResponseCode {
     /**
      * User
      */
-    SUCCESS_RETRIEVE_USER(HttpStatus.OK, "유저 조회를 성공했습니다."),
-    SUCCESS_LOGIN(HttpStatus.OK, "로그인을 성공했습니다."),
-    SUCCESS_RETRIEVE_USERINFO(HttpStatus.OK,"유저 정보를 성공적으로 가져왔습니다."),
-
+    SUCCESS_REGISTER(HttpStatus.CREATED, "회원가입을 성공했습니다."),
+    SUCCESS_LOGIN(HttpStatus.OK, "로그인을 성공했습니다. 헤더 토큰을 확인하세요."),
+    SUCCESS_RETRIEVE_USER(HttpStatus.OK, "유저 정보를 성공적으로 조회했습니다."),
+    SUCCESS_REISSUE(HttpStatus.OK, "토큰 재발급을 성공했습니다. 헤더 토큰을 확인하세요."),
+    SUCCESS_UPDATE_USER(HttpStatus.OK, "유저 정보를 성공적으로 수정했습니다."),
+    SUCCESS_RETRIEVE_ALL_USERS(HttpStatus.OK, "모든 사용자를 성공적으로 조회했습니다."),
+    SUCCESS_LOGOUT(HttpStatus.OK, "성공적으로 로그아웃했습니다."),
+    SUCCESS_DELETE_USER(HttpStatus.OK, "유저가 성공적으로 삭제되었습니다."),
 
     ;
 

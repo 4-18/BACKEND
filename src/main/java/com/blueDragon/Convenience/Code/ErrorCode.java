@@ -15,6 +15,7 @@ public enum ErrorCode {
      * 400 BAD_REQUEST: 잘못된 요청
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    DUPLICATE_LOGIN_ID(HttpStatus.BAD_REQUEST, "중복된 아이디를 사용할 수 없습니다."),
 
     /**
      * 401 UNAUTHORIZED: 토큰 만료
@@ -28,9 +29,15 @@ public enum ErrorCode {
     /**
      * 403
      */
-    HAVE_NO_PERMISSION(HttpStatus.UNAUTHORIZED, "작성자가 아닙니다.")
+    HAVE_NO_PERMISSION(HttpStatus.UNAUTHORIZED, "작성자가 아닙니다."),
 
-    ;
+    /**
+     * 404
+     */
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    HAVE_NO_AUTHORITY(HttpStatus.NOT_FOUND, "권한이 없습니다."),
+
+            ;
 
     private final HttpStatus status;
     private final String message;
