@@ -2,7 +2,7 @@ name: CD with Gradle
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [ push ]
 
 permissions:
   contents: read
