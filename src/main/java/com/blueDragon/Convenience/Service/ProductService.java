@@ -29,4 +29,12 @@ public class ProductService {
         }
         return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
     }
+
+    public List<ProductDto> getProductByNewest() {
+        List<Product> productList = productRepository.findAllProductsOrderByIdDesc();
+        if (productList.isEmpty()) {
+            throw new EmptyException("비어있습니다.");
+        }
+        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+    }
 }

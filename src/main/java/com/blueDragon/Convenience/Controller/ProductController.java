@@ -43,6 +43,14 @@ public class ProductController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
 
+    @GetMapping("/newest")
+    public ResponseEntity<ResponseDTO<?>> getProductByNewest() {
+        List<ProductDto> list = productService.getProductByNewest();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
 
     @GetMapping()
     public String showProducts(Model model) {

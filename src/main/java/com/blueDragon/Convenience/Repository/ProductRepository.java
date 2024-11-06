@@ -16,6 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE CAST(REPLACE(p.price, ',', '') AS integer) <= :maxPrice ORDER BY CAST(REPLACE(p.price, ',', '') AS integer) DESC")
     List<Product> findProductsByMaxPrice(@Param("maxPrice") int maxPrice);
 
+    @Query("SELECT p FROM Product p ORDER BY p.id DESC")
+    List<Product> findAllProductsOrderByIdDesc();
 
 
 }
