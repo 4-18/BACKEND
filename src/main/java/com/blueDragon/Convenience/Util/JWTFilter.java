@@ -50,12 +50,12 @@ public class JWTFilter extends OncePerRequestFilter {
             }
 
             String username = jwtUtil.getUsername(token);
-            String loginId = jwtUtil.getLoginId(token);
+            String nickname = jwtUtil.getNickname(token);
 
             User user = User.signupBuilder()
-                    .userName(username)
+                    .username(username)
                     .password("temppassword")
-                    .loginId(loginId)
+                    .nickname(nickname)
                     .build();
 
             Authentication authToken = new UsernamePasswordAuthenticationToken(user, null);

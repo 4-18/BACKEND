@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RegisterUserDto {
-    @NotEmpty
-    private String loginId;
-    @NotEmpty
+    @NotEmpty(message = "아이디는 비워둘 수 없습니다.")
+    private String username;
+    @NotEmpty(message = "비밀번호는 비워둘 수 없습니다.")
     private String password;
-    @NotEmpty
-    private String userName;
+    @NotEmpty(message = "이름은 비워둘 수 없습니다.")
+    private String nickname;
 }

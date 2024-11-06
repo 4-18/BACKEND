@@ -16,12 +16,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -43,31 +46,15 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) -> auth
                 .anyRequest().permitAll()
-        ); // 지금은 테스트 단계니까 걍 다 허용하겠음
+        );
 
-//        http.authorizeHttpRequests((auth) -> auth
-//                .requestMatchers(
-//                        "/login",
-//                        "/user/register",
-//                        "/admin/register"
-//                ).permitAll()
-//                .anyRequest().authenticated());
+        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userRepository);
+        loginFilter.setFilterProcessesUrl("/users/login"); // /users/login 엔드포인트를 로그인 경로로 설정
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // LoginFilter의 경로를 변경
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
-        loginFilter.setFilterProcessesUrl("/users/login"); // 로그인 처리 경로 변경
-
-
-        http.
-                addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        //세션 설정
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // 세션 설정
+        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

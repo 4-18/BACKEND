@@ -21,12 +21,12 @@ public class JWTUtil {
     }
 
     public String getUsername(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userName", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
 
 
-    public String getLoginId(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("loginId", String.class);
+    public String getNickname(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
     }
 
 
@@ -42,11 +42,11 @@ public class JWTUtil {
         }
     }
 
-    public String createJwt(String type, String userName, String loginId, Long expiredMs) {
+    public String createJwt(String type, String username, String nickname, Long expiredMs) {
         return Jwts.builder()
                 .claim("type", type)
-                .claim("userName", userName)
-                .claim("loginId", loginId)
+                .claim("username", username)
+                .claim("nickname", nickname)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

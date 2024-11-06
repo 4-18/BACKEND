@@ -25,7 +25,7 @@ class UserServiceTest {
         RegisterUserDto registerUserDto = new RegisterUserDto("testUser", "testLoginId", "testPassword");
 
         // Mocking: 중복된 loginId가 없다고 가정
-        when(userRepository.existsByLoginId(registerUserDto.getLoginId())).thenReturn(false);
+        when(userRepository.existsByUsername(registerUserDto.getUsername())).thenReturn(false);
 
         // When
         userService.register(registerUserDto);
@@ -39,7 +39,7 @@ class UserServiceTest {
         // Given
         RegisterUserDto registerUserDto = new RegisterUserDto("testUser", "duplicateLoginId", "testPassword");
         // Mocking: 중복된 loginId가 존재한다고 가정
-        when(userRepository.existsByLoginId(registerUserDto.getLoginId())).thenReturn(true);
+        when(userRepository.existsByUsername(registerUserDto.getUsername())).thenReturn(true);
         // When & Then
         assertThrows(DuplicateLoginIdException.class, () -> userService.register(registerUserDto));
         verify(userRepository, never()).save(any(User.class));

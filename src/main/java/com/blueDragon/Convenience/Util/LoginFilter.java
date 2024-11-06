@@ -4,6 +4,7 @@ import com.blueDragon.Convenience.Code.ErrorCode;
 import com.blueDragon.Convenience.Code.ResponseCode;
 import com.blueDragon.Convenience.Dto.Response.ErrorResponseDTO;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
+import com.blueDragon.Convenience.Dto.User.CustomUserDetails;
 import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @RequiredArgsConstructor
-// 로그인 성공시 응답과 로그인 실패시 응답을 정함.
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -37,26 +37,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String password = obtainPassword(request);
 
         // 추후 삭제 필요, 확인 용
-        System.out.println(username);
+        System.out.println(username + password);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
-
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+        System.out.println(authToken);
         return authenticationManager.authenticate(authToken);
     }
 
     @Override
-    // 인증 성공한 뒤의 authentication 토큰 발급
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
-        User user = (User) authentication.getPrincipal();
-        String userName = user.getUserName();
-        String loginId = user.getLoginId();
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        String username = customUserDetails.getUsername();
+        String nickname = customUserDetails.getNickname();
 
-        String accessToken = jwtUtil.createJwt("accessToken", userName, loginId,86400000L);
-        String refreshToken = jwtUtil.createJwt("refreshToken", userName, loginId, 86400000L);
+        String accessToken = jwtUtil.createJwt("accessToken", username, nickname, 86400000L);
+        String refreshToken = jwtUtil.createJwt("refreshToken", username, nickname, 86400000L);
 
         response.setHeader("accessToken", "Bearer " + accessToken);
         response.setHeader("refreshToken", "Bearer " + refreshToken);
 
+        User user = userRepository.findByUsername(username).orElse(null);
 
         ResponseDTO<?> responseDTO = new ResponseDTO<>(ResponseCode.SUCCESS_LOGIN, null);
 
@@ -70,6 +70,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+
         response.setStatus(401);
 
         ErrorResponseDTO responseDTO = new ErrorResponseDTO(ErrorCode.USER_NOT_FOUND);

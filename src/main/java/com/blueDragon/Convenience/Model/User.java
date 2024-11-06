@@ -15,19 +15,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "login_id", nullable = false)
-    private String loginId;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
 
     @Builder(builderMethodName = "signupBuilder")
-    public User(String userName, String password, String loginId) {
-        this.userName = userName;
+    public User(String username, String password, String nickname) {
+        this.username = username;
         this.password = password;
-        this.loginId = loginId;
+        this.nickname = nickname;
     }
 }

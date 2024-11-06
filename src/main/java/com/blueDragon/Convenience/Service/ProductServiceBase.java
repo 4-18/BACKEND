@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ import java.util.Set;
 public abstract class ProductServiceBase {
 
     protected final ProductRepository productRepository;
-    protected WebDriver driver = ChromeDriver.builder().build();
+    protected WebDriver driver;
 
     @Transactional
     public abstract List<Product> crawlAndSaveProducts();
@@ -32,8 +33,20 @@ public abstract class ProductServiceBase {
     protected abstract String extractPrice(WebElement productElement);
     protected abstract String extractImageUrl(WebElement productElement);
 
+    protected WebDriver getDriver() {
+        if (driver == null) {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless");  // Run Chrome in headless mode
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            driver = new ChromeDriver(options);
+        }
+        return driver;
+    }
 
     protected void loadMoreProducts() throws InterruptedException {
+        driver = getDriver();  // Ensure driver is initialized
+
         while (true) {
             try {
                 WebElement loadMoreButton = driver.findElement(By.cssSelector(".prodListBtn-w a"));
