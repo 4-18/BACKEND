@@ -5,6 +5,7 @@ import com.blueDragon.Convenience.Converter.FoodTypeListConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,6 +33,10 @@ public class Product {
 
     @Column
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductLike> productLikes = new ArrayList<>();
+
 
     public static Product customBuilder(String name, String price, List<ConvenienceType> availableAt, List<FoodType> foodTypes, String imageUrl) {
         return Product.builder()

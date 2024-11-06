@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +26,9 @@ public class User {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ProductLike> productLikes = new ArrayList<>();
 
     @Builder(builderMethodName = "signupBuilder")
     public User(String username, String password, String nickname) {
