@@ -22,6 +22,7 @@ public class ProductLikeOrHateService {
     private final UserRepository userRepository;
 
     public void register(String username, Long id, String reaction) {
+        System.out.println(username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotExistException("존재하지 않는 유저입니다."));
 
@@ -33,17 +34,11 @@ public class ProductLikeOrHateService {
         }
 
         if (reaction.equalsIgnoreCase("like")) {
-            ProductLike entity = (ProductLike) ProductLike.builder()
-                    .product(product)
-                    .user(user)
-                    .build();
+            ProductLike entity = new ProductLike(product, user);
 
             productLikeRepository.save(entity);
         } else if (reaction.equalsIgnoreCase("hate")) {
-            ProductHate entity = (ProductHate) ProductHate.builder()
-                    .product(product)
-                    .user(user)
-                    .build();
+            ProductHate entity = new ProductHate(product, user);
             productHateRepository.save(entity);
         }
     }

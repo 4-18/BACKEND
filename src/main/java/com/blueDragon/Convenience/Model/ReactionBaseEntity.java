@@ -9,11 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "reaction_type")
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public abstract class ReactionBaseEntity {
 
@@ -29,5 +25,9 @@ public abstract class ReactionBaseEntity {
     @JoinColumn(name = "product")
     private Product product;
 
+    public ReactionBaseEntity(Product product, User user) {
+        this.product = product;
+        this.user = user;
+    }
     // 공통 필드, 생성자, getter, setter 등
 }

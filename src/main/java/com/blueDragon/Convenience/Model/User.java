@@ -31,7 +31,7 @@ public class User {
     private List<ProductLike> productLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<ProductLike> productHates = new ArrayList<>();
+    private List<ProductHate> productHates = new ArrayList<>();
 
     @Builder(builderMethodName = "signupBuilder")
     public User(String username, String password, String nickname) {
