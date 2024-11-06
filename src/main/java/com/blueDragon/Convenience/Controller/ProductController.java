@@ -51,7 +51,6 @@ public class ProductController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
 
-
     @GetMapping()
     public String showProducts(Model model) {
         // 크롤링 및 저장된 제품 목록을 가져옴
