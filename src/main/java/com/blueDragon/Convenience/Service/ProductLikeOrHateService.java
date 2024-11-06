@@ -8,6 +8,7 @@ import com.blueDragon.Convenience.Repository.ProductHateRepository;
 import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import com.blueDragon.Convenience.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ProductLikeOrHateService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void register(String username, Long id, String reaction) {
         System.out.println(username);
         User user = userRepository.findByUsername(username)
@@ -33,13 +35,25 @@ public class ProductLikeOrHateService {
             throw new InvalidValueException("잘못된 값을 입력했습니다.");
         }
 
-        if (reaction.equalsIgnoreCase("like")) {
-            ProductLike entity = new ProductLike(product, user);
+        // 만약에 이미 좋아요나 취소가 되어있다면?
 
-            productLikeRepository.save(entity);
+        if (reaction.equalsIgnoreCase("like")) {
+            if (productLikeRepository.existsByProductAndUser(product,user)) {
+                // 그거 지움
+                productLikeRepository.deleteByProductAndUser(product,user);
+            }
+            else {
+            ProductLike entity = new ProductLike(product, user);
+            productLikeRepository.save(entity); }
+
         } else if (reaction.equalsIgnoreCase("hate")) {
-            ProductHate entity = new ProductHate(product, user);
-            productHateRepository.save(entity);
+            if (productHateRepository.existsByProductAndUser(product, user)) {
+                productHateRepository.deleteByProductAndUser(product,user);
+            }
+            else {
+                ProductHate entity = new ProductHate(product, user);
+                productHateRepository.save(entity);
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ public enum ResponseCode {
      * ProductReaction
      */
 
-    SUCCESS_REACTION_REGISTER(HttpStatus.OK, "성공적으로 평가를 완료했습니다."),
+    SUCCESS_REACTION_REGISTER(HttpStatus.OK, "성공적으로 평가를 처리되었습니다."),
 
     ;
 
