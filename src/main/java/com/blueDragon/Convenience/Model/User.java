@@ -30,6 +30,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ProductLike> productLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ProductLike> productHates = new ArrayList<>();
+
     @Builder(builderMethodName = "signupBuilder")
     public User(String username, String password, String nickname) {
         this.username = username;

@@ -42,4 +42,18 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.DUPLICATE_LOGIN_ID.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.DUPLICATE_LOGIN_ID));
     }
+
+    @ExceptionHandler(InvalidValueException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleInvalidValueException(final InvalidValueException e) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_VALUE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_VALUE));
+    }
+
+    @ExceptionHandler(ProductNotExistException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleProductNotExistException(final ProductNotExistException e) {
+        return ResponseEntity
+                .status(ErrorCode.PRODUCT_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.PRODUCT_NOT_FOUND));
+    }
 }

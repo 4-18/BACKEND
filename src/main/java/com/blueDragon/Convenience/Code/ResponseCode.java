@@ -25,7 +25,16 @@ public enum ResponseCode {
     SUCCESS_LOGOUT(HttpStatus.OK, "성공적으로 로그아웃했습니다."),
     SUCCESS_DELETE_USER(HttpStatus.OK, "유저가 성공적으로 삭제되었습니다."),
 
+
+    /**
+     * ProductReaction
+     */
+
+    SUCCESS_REACTION_REGISTER(HttpStatus.OK, "성공적으로 평가를 완료했습니다."),
+
     ;
+
+
 
     private final HttpStatus status;
     private final String message;
