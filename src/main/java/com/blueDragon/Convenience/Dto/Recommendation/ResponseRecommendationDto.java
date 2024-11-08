@@ -22,9 +22,9 @@ public class ResponseRecommendationDto {
     private String imageUrls;
     private List<String> availableAt;
     private List<String> foodTypes;
+    private List<ProductDto> productList;
     private String totalPrice;
     private Integer countLikes;
-    private List<ProductDto> productList;
     private Integer countComments;
 
     public static ResponseRecommendationDto entityToCreateDto(RecommendBoard recommendBoard) {
