@@ -49,4 +49,7 @@ public class RecommendBoard extends BaseEntity{
     @OneToMany(mappedBy = "RecommendBoard", cascade = CascadeType.ALL)
     private List<Product> productList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "RecommendLike", cascade = CascadeType.ALL)
+    private List<RecommendLike> recommendLikes = new ArrayList<>();
+
 }
