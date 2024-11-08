@@ -21,13 +21,9 @@ public abstract class ReactionBaseEntity {
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product")
-    private Product product;
-
-    public ReactionBaseEntity(Product product, User user) {
-        this.product = product;
+    public ReactionBaseEntity(User user) {
         this.user = user;
     }
+
     // 공통 필드, 생성자, getter, setter 등
 }
