@@ -19,29 +19,29 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class S3Uploader {
 
     private final AmazonS3 amazonS3;
+    private final String bucket;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
+    public S3Uploader(AmazonS3 amazonS3, @Value("${cloud.aws.s3.bucket}") String bucket) {
+        this.amazonS3 = amazonS3;
+        this.bucket = bucket;
+    }
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
         //String originalFileName = multipartFile.getOriginalFilename();
 
-        // UUID를 파일명에 추가 (varchar(20)으로 들어갈 수 있도록)
-        String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        // UUID를 파일명에 추가
+        String uuid = UUID.randomUUID().toString();
 
         //String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
 
         String fileName = dirName + "/" + uuid;
         log.info("fileName: " + fileName);
         // S3에 파일 업로드
-        System.out.println(putS3(multipartFile, fileName));
-        return uuid;
+        return putS3(multipartFile, fileName);
     }
 
     private String putS3(MultipartFile multipartFile, String fileName) throws IOException {
@@ -63,27 +63,5 @@ public class S3Uploader {
         } catch (UnsupportedEncodingException e) {
             log.error("Error while decoding the file name: {}", e.getMessage());
         }
-    }
-
-    public List<String> getStringList(List<MultipartFile> files) {
-        // s3에 업로드 후 url 리스트 반환
-        List<String> urls = new ArrayList<>();
-
-        if (files != null && !files.isEmpty()) {
-            urls = files.stream().map(multipartFile -> {
-                try {
-                    String url = upload(multipartFile, "recommend");
-                    log.info("S3 업로드 성공: " + url);
-                    return url;
-                } catch (IOException e) {
-                    log.error("S3 업로드 실패: " + multipartFile.getOriginalFilename(), e);
-                    throw new RuntimeException("S3 업로드 실패", e);
-                }
-            }).toList();
-        } else {
-            log.info("업로드할 파일이 제공되지 않았습니다.");
-        }
-
-        return urls;
     }
 }
