@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -61,5 +63,27 @@ public class S3Uploader {
         } catch (UnsupportedEncodingException e) {
             log.error("Error while decoding the file name: {}", e.getMessage());
         }
+    }
+
+    public List<String> getStringList(List<MultipartFile> files) {
+        // s3에 업로드 후 url 리스트 반환
+        List<String> urls = new ArrayList<>();
+
+        if (files != null && !files.isEmpty()) {
+            urls = files.stream().map(multipartFile -> {
+                try {
+                    String url = upload(multipartFile, "recommend");
+                    log.info("S3 업로드 성공: " + url);
+                    return url;
+                } catch (IOException e) {
+                    log.error("S3 업로드 실패: " + multipartFile.getOriginalFilename(), e);
+                    throw new RuntimeException("S3 업로드 실패", e);
+                }
+            }).toList();
+        } else {
+            log.info("업로드할 파일이 제공되지 않았습니다.");
+        }
+
+        return urls;
     }
 }

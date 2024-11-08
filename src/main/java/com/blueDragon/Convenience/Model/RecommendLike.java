@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RecommendLike extends ReactionBaseEntity{
     @ManyToOne
-    @JoinColumn(name = "recommend_board")
-    private RecommendBoard RecommendBoard;
+    @JoinColumn(name = "recommend_board_id")
+    private RecommendBoard recommendBoard;  // Notice the field name in lowercase (Java naming convention)
+
 }
