@@ -3,6 +3,7 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,14 @@ public class ProductService {
 
     public List<ProductDto> getProductByNewest() {
         List<Product> productList = productRepository.findAllProductsOrderByIdDesc();
+        if (productList.isEmpty()) {
+            throw new EmptyException("비어있습니다.");
+        }
+        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getLikedProductsByUser(User user) {
+        List<Product> productList = productRepository.findLikedProductsByUser(user);
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
