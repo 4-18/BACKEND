@@ -1,6 +1,7 @@
 package com.blueDragon.Convenience.Dto.Recommendation;
 
 
+import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Model.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ResponseRecommendationDto {
     private Long id;
-    private User user;
+    private Long userId;
     private String title;
     private LocalDateTime createdAt;
     private String content;
@@ -23,17 +24,19 @@ public class ResponseRecommendationDto {
     private List<String> foodTypes;
     private String totalPrice;
     private Integer countLikes;
-    private List<Product> productList;
+    private List<ProductDto> productList;
     private Integer countComments;
 
     public static ResponseRecommendationDto entityToCreateDto(RecommendBoard recommendBoard) {
         return ResponseRecommendationDto.builder()
                 .id(recommendBoard.getId())
+                .userId(recommendBoard.getUser().getId())
                 .title(recommendBoard.getTitle())
                 .content(recommendBoard.getContent())
                 .createdAt(recommendBoard.getCreatedAt())
                 .countLikes(0)
-                .countLikes(0)
+                .countComments(0)
+                .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
                 .foodTypes(recommendBoard.getFoodTypes().stream()
                         .map(FoodType::name) // Convert FoodType enum values to strings
                         .collect(Collectors.toList()))
@@ -41,6 +44,7 @@ public class ResponseRecommendationDto {
                         .map(ConvenienceType::name)
                         .collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
+                .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
                 .build();
     }
 }

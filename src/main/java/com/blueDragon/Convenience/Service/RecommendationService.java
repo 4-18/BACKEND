@@ -11,8 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,7 +35,13 @@ public class RecommendationService {
         Integer totalPrice = productService.sumProductPrices(productList);
         List<FoodType> foodTypes = productService.combineFoodTypes(productList);
         List<ConvenienceType> availableAt = productService.combineConvenienceTypes(productList);
-        List<String> urls = s3Uploader.getStringList(files);
+        List<String> urls = files.stream().map((multipartFile -> {
+            try {
+                return s3Uploader.upload(multipartFile, "recommend");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        })).toList();
 
         RecommendBoard entity = RecommendBoard.builder()
                                 .title(recommendationDto.getTitle())
