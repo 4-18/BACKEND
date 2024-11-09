@@ -75,9 +75,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmptyException.class)
-    protected ResponseEntity<ResponseDTO<?>> handlePEmptyException(final EmptyException e) {
+    protected ResponseEntity<ResponseDTO<?>> handleEmptyException(final EmptyException e) {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_PRODUCT_EMPTY.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_PRODUCT_EMPTY, null));
+    }
+
+
+    @ExceptionHandler(RecommendationNotExistException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleRecommendationNotExistException(final RecommendationNotExistException e) {
+        return ResponseEntity
+                .status(ErrorCode.RECOMMENDATION_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.RECOMMENDATION_NOT_FOUND));
     }
 }

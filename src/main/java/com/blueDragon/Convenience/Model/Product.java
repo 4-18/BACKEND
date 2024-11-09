@@ -58,4 +58,8 @@ public class Product {
         this.availableAt = availableAt;
         return this;
     }
+
+    public void setRecommendBoard(RecommendBoard entity) {
+        this.recommendBoard = entity;
+    }
 }

@@ -3,10 +3,12 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
 import com.blueDragon.Convenience.Exception.EmptyException;
+import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.*;
 import com.blueDragon.Convenience.Repository.RecommendationRepository;
 import com.blueDragon.Convenience.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class RecommendationService {
     private final RecommendationRepository recommendationRepository;
     private final S3Uploader s3Uploader;
 
+    @Transactional
     public ResponseRecommendationDto register(RequestRecommendationDto recommendationDto, List<MultipartFile> files, String username) {
 
         User user = userRepository.findByUsername(username)
@@ -49,7 +52,8 @@ public class RecommendationService {
         RecommendBoard entity = RecommendBoard.builder()
                                 .title(recommendationDto.getTitle())
                                 .content(recommendationDto.getContent())
-                                .imageUrl(urls.toString())
+                                .imageUrl(String.join(",", urls)) // 쉼표로 구분된 문자열로 변환
+
                                 .recommendLikes(new ArrayList<>())
                                 .productList(productList)
                                 .foodTypes(foodTypes)
@@ -58,6 +62,7 @@ public class RecommendationService {
                                 .user(user)
                                 .build();
 
+        productList.forEach(product -> product.setRecommendBoard(entity));
         recommendationRepository.save(entity);
         return ResponseRecommendationDto.entityToCreateDto(entity);
 
@@ -72,5 +77,13 @@ public class RecommendationService {
             throw new EmptyException("비어있습니다.");
         }
         return recommendBoardList.stream().map((ResponseRecommendationDto::entityToCreateDto)).collect(Collectors.toList());
+    }
+
+    public ResponseRecommendationDto getRecommendationById(Long id) {
+        RecommendBoard recommendBoard = recommendationRepository.findById(id)
+                .orElseThrow(() -> new RecommendationNotExistException("존재하지 않는 레시피입니다."));
+
+        System.out.println(recommendBoard.getProductList());
+        return ResponseRecommendationDto.entityToCreateDto(recommendBoard);
     }
 }

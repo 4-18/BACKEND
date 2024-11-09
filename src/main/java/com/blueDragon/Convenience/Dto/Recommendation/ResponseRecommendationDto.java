@@ -44,7 +44,28 @@ public class ResponseRecommendationDto {
                         .map(ConvenienceType::name)
                         .collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
-                .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
+                .productList(recommendBoard.getProductList().stream().map(ProductDto::entityToDto).collect(Collectors.toList()))
+                .build();
+    }
+
+    public static ResponseRecommendationDto entityToDto(RecommendBoard recommendBoard) {
+        return ResponseRecommendationDto.builder()
+                .id(recommendBoard.getId())
+                .userId(recommendBoard.getUser().getId())
+                .title(recommendBoard.getTitle())
+                .content(recommendBoard.getContent())
+                .createdAt(recommendBoard.getCreatedAt())
+                .countLikes(recommendBoard.getRecommendLikes().size())
+                .countComments(0)
+                .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
+                .foodTypes(recommendBoard.getFoodTypes().stream()
+                        .map(FoodType::name) // Convert FoodType enum values to strings
+                        .collect(Collectors.toList()))
+                .availableAt(recommendBoard.getAvailableAt().stream()
+                        .map(ConvenienceType::name)
+                        .collect(Collectors.toList()))
+                .imageUrls(recommendBoard.getImageUrl())
+                .productList(recommendBoard.getProductList().stream().map(ProductDto::entityToDto).collect(Collectors.toList()))
                 .build();
     }
 }
