@@ -4,6 +4,7 @@ import com.blueDragon.Convenience.Code.ResponseCode;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import com.blueDragon.Convenience.Service.CUProductService;
 import com.blueDragon.Convenience.Service.GSProductService;
@@ -12,6 +13,7 @@ import com.blueDragon.Convenience.Service.SevenProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +48,14 @@ public class ProductController {
     @GetMapping("/newest")
     public ResponseEntity<ResponseDTO<?>> getProductByNewest() {
         List<ProductDto> list = productService.getProductByNewest();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+    @GetMapping("/liked")
+    public ResponseEntity<ResponseDTO<?>> getLikedProductsByUser(@AuthenticationPrincipal User user) {
+        List<ProductDto> list = productService.getLikedProductsByUser(user);
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));

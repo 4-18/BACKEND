@@ -6,6 +6,7 @@ import com.blueDragon.Convenience.Exception.ProductNotExistException;
 import com.blueDragon.Convenience.Model.ConvenienceType;
 import com.blueDragon.Convenience.Model.FoodType;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,14 @@ public class ProductService {
 
     public List<ProductDto> getProductByNewest() {
         List<Product> productList = productRepository.findAllProductsOrderByIdDesc();
+        if (productList.isEmpty()) {
+            throw new EmptyException("비어있습니다.");
+        }
+        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getLikedProductsByUser(User user) {
+        List<Product> productList = productRepository.findLikedProductsByUser(user);
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
