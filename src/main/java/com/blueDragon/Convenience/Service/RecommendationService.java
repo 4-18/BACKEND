@@ -2,6 +2,7 @@ package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
+import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.*;
 import com.blueDragon.Convenience.Repository.RecommendationRepository;
@@ -61,5 +62,15 @@ public class RecommendationService {
         return ResponseRecommendationDto.entityToCreateDto(entity);
 
 
+    }
+
+    public List<ResponseRecommendationDto> getRecommendationByNewest() {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findAllRecommendationOrderByIdDesc();
+        if (recommendBoardList.isEmpty()) {
+            // 레시피 글이 비어있다는 예외처리가 에러코드에 아직 구현이 안 됐으므로 임시로 상품 예외처리 코드 연결
+            // 추후에 바꿔야함
+            throw new EmptyException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToCreateDto)).collect(Collectors.toList());
     }
 }
