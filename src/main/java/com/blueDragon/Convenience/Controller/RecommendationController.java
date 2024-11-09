@@ -34,6 +34,16 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_REGISTER_RECOMMENDATIONS, res));
     }
 
+
+    @GetMapping("/{recommendation_id}")
+    public ResponseEntity<?> getRecommendationById(@PathVariable("recommendation_id") Long id) {
+        ResponseRecommendationDto res = recommendationService.getRecommendationById(id);
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION, res));
+    }
+
     @GetMapping("/newest")
     public ResponseEntity<ResponseDTO<?>> getRecommendationByNewest() {
         List<ResponseRecommendationDto> list = recommendationService.getRecommendationByNewest();
