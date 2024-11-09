@@ -1,8 +1,10 @@
 package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Product.ProductCommentDto;
+import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Model.ProductComment;
 import com.blueDragon.Convenience.Repository.ProductCommentRepository;
+import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,16 +18,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductCommentService {
     private final ProductCommentRepository productCommentRepository;
+    private final ProductRepository productRepository;
+
 
     // 댓글 작성
     @Transactional
     public ProductCommentDto addComment(Long productId, ProductCommentDto commentDto) {
+        // productId로 Product 엔티티 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        // ProductComment에 Product 설정
         ProductComment productComment = ProductComment.builder()
+                .product(product) // product 설정
                 .comment(commentDto.getComment())
                 .build();
+
         productComment = productCommentRepository.save(productComment);
         return ProductCommentDto.entityToDto(productComment);
     }
+
 
     // 댓글 조회
     public ProductCommentDto getComment(Long commentId) {
