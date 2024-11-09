@@ -3,7 +3,6 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Model.Product;
-import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +37,4 @@ public class ProductService {
         }
         return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
     }
-
 }
