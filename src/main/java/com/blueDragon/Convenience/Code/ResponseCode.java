@@ -44,8 +44,8 @@ public enum ResponseCode {
      */
 
     SUCCESS_REGISTER_RECOMMENDATIONS(HttpStatus.OK, "레시피를 성공적으로 등록했습니다."),
-    //SUCCESS_RETRIEVE_PRODUCT_LIST(HttpStatus.OK, "상품 리스트를 성공적으로 불러왔습니다."),
-    //SUCCESS_PRODUCT_EMPTY(HttpStatus.OK, "요청은 성공했으나, 상품이 존재하지 않습니다."),
+    SUCCESS_RETRIEVE_RECOMMENDATION_LIST(HttpStatus.OK, "레시피 리스트를 성공적으로 불러왔습니다."),
+    SUCCESS_RECOMMENDATION_EMPTY(HttpStatus.OK, "요청은 성공했으나, 레시피가 존재하지 않습니다."),
 
 
     ;
