@@ -39,11 +39,4 @@ public class ProductService {
         return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
     }
 
-    public List<ProductDto> getLikedProductsByUser(User user) {
-        List<Product> productList = productRepository.findLikedProductsByUser(user);
-        if (productList.isEmpty()) {
-            throw new EmptyException("비어있습니다.");
-        }
-        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
-    }
 }
