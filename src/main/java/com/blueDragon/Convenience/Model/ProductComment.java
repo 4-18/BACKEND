@@ -18,9 +18,15 @@ public class ProductComment extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 256, nullable = false)
+    @Column(length = 100, nullable = false)
     private String comment; //댓글 본문
 
-    //생성 시간은 baseEntity에 존재 (중복되는 코드 줄이기 위함)
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)  // fk
+    private Product product;
 
+    //생성 시간은 baseEntity에 존재 (중복되는 코드 줄이기 위함)
+    public void updateComment(String newComment) {
+        this.comment = newComment;
+    }
 }

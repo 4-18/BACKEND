@@ -34,11 +34,14 @@ public class Product {
     @Column
     private String imageUrl;
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductLike> productLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductHate> productHates = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "recommend_board_id")
+    private RecommendBoard recommendBoard;
 
 
     public static Product customBuilder(String name, String price, List<ConvenienceType> availableAt, List<FoodType> foodTypes, String imageUrl) {

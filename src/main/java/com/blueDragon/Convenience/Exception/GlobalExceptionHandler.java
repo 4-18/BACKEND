@@ -5,6 +5,7 @@ import com.blueDragon.Convenience.Code.ErrorCode;
 import com.blueDragon.Convenience.Code.ResponseCode;
 import com.blueDragon.Convenience.Dto.Response.ErrorResponseDTO;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -37,6 +38,20 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.BAD_REQUEST.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.BAD_REQUEST, errors));
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String errorMessage = violation.getMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return ResponseEntity
+                .status(ErrorCode.BAD_REQUEST.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.BAD_REQUEST, errors));
+    }
+
 
     @ExceptionHandler(DuplicateLoginIdException.class)
     protected ResponseEntity<ErrorResponseDTO> handleDuplicateLoginIdException(final DuplicateLoginIdException e) {

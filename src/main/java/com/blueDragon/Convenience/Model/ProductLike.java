@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class ProductLike extends ReactionBaseEntity {
+    @ManyToOne
+    @JoinColumn(name = "Product")
+    private Product product;
+
     public ProductLike(Product product, User user) {
-        super(product, user);
+        super(user);
+        this.product = product;
     }
-
-
-    // Like 클래스에만 필요한 필드와 메서드가 있다면 추가
 }
 
