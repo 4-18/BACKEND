@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,5 +32,15 @@ public class RecommendationController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_REGISTER_RECOMMENDATIONS.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_REGISTER_RECOMMENDATIONS, res));
+    }
+
+    @GetMapping("/newest")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByNewest() {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByNewest();
+        return ResponseEntity
+                // 레시피 글 관련 response 코드에가 미구현이므로 임시로 상품 response 코드 연결
+                // 추후에 바꿔야함
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
 }
