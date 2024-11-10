@@ -64,9 +64,15 @@ public class RecommendationController {
     public ResponseEntity<ResponseDTO<?>> getRecommendationByNewest() {
         List<ResponseRecommendationDto> list = recommendationService.getRecommendationByNewest();
         return ResponseEntity
-                // 레시피 글 관련 response 코드에가 미구현이므로 임시로 상품 response 코드 연결
-                // 추후에 바꿔야함
-                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByUser(@Valid @AuthenticationPrincipal User user) {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByUser(user.getUsername());
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
     }
 }

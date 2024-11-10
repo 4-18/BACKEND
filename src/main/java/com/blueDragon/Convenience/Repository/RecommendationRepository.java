@@ -20,4 +20,8 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     // 내가 좋아요 누른 레시피 불러오기
     @Query("SELECT rl.recommendBoard FROM RecommendLike rl WHERE rl.user.username = :username")
     List<RecommendBoard> findLikedRecommendationByUser(@Param("username") String username);
+
+    // 내가 쓴 글 불러오기
+    @Query("SELECT r FROM RecommendBoard r WHERE r.user.username = :username")
+    List<RecommendBoard> findRecommendationByUser(@Param("username") String username);
 }
