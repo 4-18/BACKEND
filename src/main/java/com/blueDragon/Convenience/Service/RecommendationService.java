@@ -93,6 +93,14 @@ public class RecommendationService {
         return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
     }
 
+    public List<ResponseRecommendationDto> getRecommendationByUser(String username) {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findRecommendationByUser(username);
+        if (recommendBoardList.isEmpty()) {
+            throw new RecommendationEmptyException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+    }
+
     public ResponseRecommendationDto getRecommendationById(Long id) {
         RecommendBoard recommendBoard = recommendationRepository.findById(id)
                 .orElseThrow(() -> new RecommendationNotExistException("존재하지 않는 레시피입니다."));
