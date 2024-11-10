@@ -88,4 +88,11 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.RECOMMENDATION_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.RECOMMENDATION_NOT_FOUND));
     }
+
+    @ExceptionHandler(RecommendationEmptyException.class)
+    protected ResponseEntity<ResponseDTO<?>> handleRecommendationEmptyException(final RecommendationEmptyException e) {
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY, null));
+    }
 }
