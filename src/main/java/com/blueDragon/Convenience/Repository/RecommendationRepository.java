@@ -17,6 +17,7 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query("SELECT r FROM RecommendBoard r LEFT JOIN r.recommendLikes rl GROUP BY r.id ORDER BY COUNT(rl) DESC")
     List<RecommendBoard> findAllByOrderByLikeCountDesc();
 
-    @Query("SELECT COUNT(rl) FROM RecommendLike rl WHERE rl.recommendBoard.id = :boardId")
-    int findLikeCountByBoardId(@Param("boardId") Long boardId);
+    // 내가 좋아요 누른 레시피 불러오기
+    @Query("SELECT rl.recommendBoard FROM RecommendLike rl WHERE rl.user.username = :username")
+    List<RecommendBoard> findLikedRecommendationByUser(@Param("username") String username);
 }

@@ -2,7 +2,7 @@ package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
-import com.blueDragon.Convenience.Exception.EmptyException;
+import com.blueDragon.Convenience.Exception.RecommendationEmptyException;
 import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.*;
@@ -72,7 +72,7 @@ public class RecommendationService {
     public List<ResponseRecommendationDto> getRecommendationByPopular() {
         List<RecommendBoard> recommendBoardList = recommendationRepository.findAllByOrderByLikeCountDesc();
         if (recommendBoardList.isEmpty()) {
-            throw new RecommendationNotExistException("비어있습니다.");
+            throw new RecommendationEmptyException("비어있습니다.");
         }
         return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
     }
@@ -80,9 +80,15 @@ public class RecommendationService {
     public List<ResponseRecommendationDto> getRecommendationByNewest() {
         List<RecommendBoard> recommendBoardList = recommendationRepository.findAllRecommendationOrderByIdDesc();
         if (recommendBoardList.isEmpty()) {
-            // 레시피 글이 비어있다는 예외처리가 에러코드에 아직 구현이 안 됐으므로 임시로 상품 예외처리 코드 연결
-            // 추후에 바꿔야함
-            throw new EmptyException("비어있습니다.");
+            throw new RecommendationEmptyException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+    }
+
+    public List<ResponseRecommendationDto> getLikedRecommendationByUser(String username) {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findLikedRecommendationByUser(username);
+        if (recommendBoardList.isEmpty()) {
+            throw new RecommendationEmptyException("비어있습니다.");
         }
         return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
     }

@@ -44,6 +44,14 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION, res));
     }
 
+    @GetMapping("/liked")
+    public ResponseEntity<?> getLikedRecommendationByUser(@Valid @AuthenticationPrincipal User user) {
+        List<ResponseRecommendationDto> list = recommendationService.getLikedRecommendationByUser(user.getUsername());
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
     @GetMapping("/popular")
     public ResponseEntity<ResponseDTO<?>> getRecommendationByPopular() {
         List<ResponseRecommendationDto> list = recommendationService.getRecommendationByPopular();
