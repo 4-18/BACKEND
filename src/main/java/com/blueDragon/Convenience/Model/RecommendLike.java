@@ -12,4 +12,8 @@ public class RecommendLike extends ReactionBaseEntity{
     @JoinColumn(name = "recommend_board_id")
     private RecommendBoard recommendBoard;  // Notice the field name in lowercase (Java naming convention)
 
+    public RecommendLike(RecommendBoard recommendBoard, User user) {
+        super(user);
+        this.recommendBoard = recommendBoard;
+    }
 }
