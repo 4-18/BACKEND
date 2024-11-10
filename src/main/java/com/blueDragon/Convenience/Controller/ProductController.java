@@ -54,8 +54,8 @@ public class ProductController {
     }
 
     @GetMapping("/liked")
-    public ResponseEntity<ResponseDTO<?>> getLikedProductsByUser(@AuthenticationPrincipal User user) {
-        List<ProductDto> list = productService.getLikedProductsByUser(user);
+    public ResponseEntity<ResponseDTO<?>> getLikedProductsByUser(@Valid @AuthenticationPrincipal User user) {
+        List<ProductDto> list = productService.getLikedProductsByUser(user.getUsername());
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));

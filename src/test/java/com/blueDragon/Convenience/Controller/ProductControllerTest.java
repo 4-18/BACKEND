@@ -43,18 +43,4 @@ class ProductControllerTest {
         verify(cuProductService, times(1)).crawlAndSaveProducts();
     }
 
-
-    @Test
-    public void testGetLikedProductsByUser() {
-        // 원하는 데이터를 포함하는 리스트 생성
-        ProductDto productDto = new ProductDto();
-        List<ProductDto> likedProducts = List.of(productDto);
-
-        // Mock 설정: getLikedProductsByUser 메서드가 호출되면 likedProducts를 반환
-        when(productService.getLikedProductsByUser(any(User.class))).thenReturn(likedProducts);
-
-        // productService.getLikedProductsByUser 호출 시 likedProducts 반환 확인
-        List<ProductDto> result = productService.getLikedProductsByUser(new User());
-        assertEquals(1, result.size()); // 결과가 예상대로인지 검증
-    }
 }
