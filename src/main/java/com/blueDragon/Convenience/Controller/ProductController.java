@@ -10,6 +10,10 @@ import com.blueDragon.Convenience.Service.CUProductService;
 import com.blueDragon.Convenience.Service.GSProductService;
 import com.blueDragon.Convenience.Service.ProductService;
 import com.blueDragon.Convenience.Service.SevenProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Tag(name = "상품 API")
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
@@ -37,8 +42,13 @@ public class ProductController {
 //        List<ProductDto> list = productService.getList(sort);
 //    }
 
+
     @GetMapping("/price/{price}")
-    public ResponseEntity<ResponseDTO<?>> getProductsByPrice(@PathVariable int price) {
+    @Operation(summary = "상품 리스트 - 가격순", description = "상품 리스트를 가격순으로 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    public ResponseEntity<ResponseDTO<?>> getProductsByPrice(
+            @Parameter(required = true, description = "기준이 되는 금액")
+            @PathVariable int price) {
         List<ProductDto> list = productService.getProductByPrice(price);
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
@@ -46,6 +56,8 @@ public class ProductController {
     }
 
     @GetMapping("/newest")
+    @Operation(summary = "상품 리스트 - 최신순", description = "상품 리스트를 최신순으로 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getProductByNewest() {
         List<ProductDto> list = productService.getProductByNewest();
         return ResponseEntity
@@ -54,6 +66,8 @@ public class ProductController {
     }
 
     @GetMapping("/liked")
+    @Operation(summary = "내가 좋아요 누른 상품 불러오기", description = "토큰을 사용하여 내가 좋아요 누른 상품을 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getLikedProductsByUser(@Valid @AuthenticationPrincipal User user) {
         List<ProductDto> list = productService.getLikedProductsByUser(user.getUsername());
         return ResponseEntity
