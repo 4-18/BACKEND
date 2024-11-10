@@ -69,6 +69,14 @@ public class RecommendationService {
 
     }
 
+    public List<ResponseRecommendationDto> getRecommendationByPopular() {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findAllByOrderByLikeCountDesc();
+        if (recommendBoardList.isEmpty()) {
+            throw new RecommendationNotExistException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+    }
+
     public List<ResponseRecommendationDto> getRecommendationByNewest() {
         List<RecommendBoard> recommendBoardList = recommendationRepository.findAllRecommendationOrderByIdDesc();
         if (recommendBoardList.isEmpty()) {
@@ -76,7 +84,7 @@ public class RecommendationService {
             // 추후에 바꿔야함
             throw new EmptyException("비어있습니다.");
         }
-        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToCreateDto)).collect(Collectors.toList());
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
     }
 
     public ResponseRecommendationDto getRecommendationById(Long id) {
