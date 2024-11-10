@@ -9,11 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "2024 4호선톤 Convenience API", description = "2024 4호선톤 백엔드 Convenience API 명세서", version = "v1"),
-        servers = {
-                @Server(url = "http://15.165.181.78"),
-                @Server(url = "http://localhost:8080")
-        }
+        info = @Info(title = "2024 4호선톤 Convenience API", description = "2024 4호선톤 백엔드 Convenience API 명세서", version = "v1")
 )
 @RequiredArgsConstructor
 @Configuration
