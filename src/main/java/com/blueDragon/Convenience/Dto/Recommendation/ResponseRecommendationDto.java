@@ -3,6 +3,7 @@ package com.blueDragon.Convenience.Dto.Recommendation;
 
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Model.*;
+import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ResponseRecommendationDto {
     private Long id;
     private Long userId;
@@ -22,10 +22,11 @@ public class ResponseRecommendationDto {
     private String imageUrls;
     private List<String> availableAt;
     private List<String> foodTypes;
+    @Setter
     private List<ProductDto> productList;
     private String totalPrice;
-    private Integer countLikes;
-    private Integer countComments;
+    private int countLikes;
+    private int countComments;
 
     public static ResponseRecommendationDto entityToCreateDto(RecommendBoard recommendBoard) {
         return ResponseRecommendationDto.builder()
@@ -44,7 +45,7 @@ public class ResponseRecommendationDto {
                         .map(ConvenienceType::name)
                         .collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
-                .productList(recommendBoard.getProductList().stream().map(ProductDto::entityToDto).collect(Collectors.toList()))
+                .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
                 .build();
     }
 
@@ -65,7 +66,6 @@ public class ResponseRecommendationDto {
                         .map(ConvenienceType::name)
                         .collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
-                .productList(recommendBoard.getProductList().stream().map(ProductDto::entityToDto).collect(Collectors.toList()))
                 .build();
     }
 }

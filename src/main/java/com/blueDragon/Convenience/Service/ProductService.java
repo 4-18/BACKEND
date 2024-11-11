@@ -7,6 +7,7 @@ import com.blueDragon.Convenience.Model.ConvenienceType;
 import com.blueDragon.Convenience.Model.FoodType;
 import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Model.User;
+import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductLikeRepository productLikeRepository;
 
 //    public List<ProductDto> getList(String sort) {
 //
@@ -31,7 +33,11 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
-        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+        return productList.stream().map((product -> {
+            ProductDto dto = ProductDto.entityToDto(product);
+            dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+            return dto;
+        })).collect(Collectors.toList());
     }
 
     public List<ProductDto> getProductByNewest() {
@@ -39,7 +45,11 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
-        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+        return productList.stream().map((product -> {
+            ProductDto dto = ProductDto.entityToDto(product);
+            dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+            return dto;
+        })).collect(Collectors.toList());
     }
 
     public List<ProductDto> getLikedProductsByUser(User user) {
@@ -47,7 +57,11 @@ public class ProductService {
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
-        return productList.stream().map((ProductDto::entityToDto)).collect(Collectors.toList());
+        return productList.stream().map((product -> {
+            ProductDto dto = ProductDto.entityToDto(product);
+            dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+            return dto;
+        })).collect(Collectors.toList());
     }
 
     public List<Product> getProductFromDto(List<Integer> recommendProductRequestDtos) {

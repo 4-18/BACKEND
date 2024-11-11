@@ -2,16 +2,13 @@ package com.blueDragon.Convenience.Dto.Product;
 
 import com.blueDragon.Convenience.Model.ConvenienceType;
 import com.blueDragon.Convenience.Model.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Builder
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
@@ -21,6 +18,7 @@ public class ProductDto {
     private List<String> availableAt;
     private String foodType;
     private String imageUrl;
+    private int countLikes;
 
     public static ProductDto entityToDto(Product product) {
         return ProductDto.builder()

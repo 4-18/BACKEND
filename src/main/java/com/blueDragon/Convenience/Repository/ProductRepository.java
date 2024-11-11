@@ -22,5 +22,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT pl.product FROM ProductLike pl WHERE pl.user = :user")
     List<Product> findLikedProductsByUser(@Param("user") User user);
-
 }

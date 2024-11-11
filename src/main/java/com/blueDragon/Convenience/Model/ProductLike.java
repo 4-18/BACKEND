@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductLike extends ReactionBaseEntity {
     @ManyToOne
-    @JoinColumn(name = "Product")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
     public ProductLike(Product product, User user) {
         super(user);
         this.product = product;
