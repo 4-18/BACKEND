@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "SWAGGER", description = "스웨거", version = "v1"),
-        servers = @Server(url = "http://15.165.181.78/", description = "서버 URL")
-
+        info = @Info(title = "2024 4호선톤 Convenience API", description = "2024 4호선톤 백엔드 Convenience API 명세서", version = "v1")
 )
 @RequiredArgsConstructor
 @Configuration
@@ -21,7 +19,7 @@ public class SwaggerConfig {
     public GroupedOpenApi SwaggerOpenApi() {
         return GroupedOpenApi.builder()
                 .group("Swagger-api")
-                .pathsToMatch("/api/**")
+                .pathsToMatch("/**")
                 .build();
     }
 }

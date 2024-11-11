@@ -7,6 +7,9 @@ import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
 import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Service.RecommendationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
+@Tag(name = "레시피 API")
 @RequiredArgsConstructor
 @RequestMapping("/recommendations")
 public class RecommendationController {
@@ -44,13 +48,43 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION, res));
     }
 
+    @GetMapping("/liked")
+    @Operation(summary = "내가 좋아요 누른 레시피 불러오기", description = "내가 좋아요 누른 레시피를 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    public ResponseEntity<?> getLikedRecommendationByUser(@Valid @AuthenticationPrincipal User user) {
+        List<ResponseRecommendationDto> list = recommendationService.getLikedRecommendationByUser(user.getUsername());
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
+    @GetMapping("/popular")
+    @Operation(summary = "레시피 리스트 - 추천순", description = "레시피 좋아요가 가장 많은 순서대로 레시피를 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByPopular() {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByPopular();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
     @GetMapping("/newest")
+    @Operation(summary = "레시피 리스트 - 최신순", description = "레시피를 최신순으로 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getRecommendationByNewest() {
         List<ResponseRecommendationDto> list = recommendationService.getRecommendationByNewest();
         return ResponseEntity
-                // 레시피 글 관련 response 코드에가 미구현이므로 임시로 상품 response 코드 연결
-                // 추후에 바꿔야함
-                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
-                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
+    @GetMapping("/my")
+    @Operation(summary = "내가 쓴 글 불러오기", description = "내가 작성한 레시피를 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByUser(@Valid @AuthenticationPrincipal User user) {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByUser(user.getUsername());
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
     }
 }

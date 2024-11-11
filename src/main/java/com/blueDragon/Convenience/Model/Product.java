@@ -34,6 +34,7 @@ public class Product {
     @Column
     private String imageUrl;
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductLike> productLikes = new ArrayList<>();
 

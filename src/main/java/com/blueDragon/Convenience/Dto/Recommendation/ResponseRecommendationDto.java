@@ -3,7 +3,6 @@ package com.blueDragon.Convenience.Dto.Recommendation;
 
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Model.*;
-import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import lombok.*;
 
 import java.time.LocalDateTime;

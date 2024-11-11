@@ -52,8 +52,8 @@ public class ProductService {
         })).collect(Collectors.toList());
     }
 
-    public List<ProductDto> getLikedProductsByUser(User user) {
-        List<Product> productList = productRepository.findLikedProductsByUser(user);
+    public List<ProductDto> getLikedProductsByUser(String username) {
+        List<Product> productList = productRepository.findLikedProductsByUser(username);
         if (productList.isEmpty()) {
             throw new EmptyException("비어있습니다.");
         }
