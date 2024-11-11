@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ProductLikeRepository extends JpaRepository<ProductLike, Long> {
     boolean existsByProductAndUser(Product product, User user);
     void deleteByProductAndUser(Product product, User user);
+
+    int countLikesByProductId(Long productId);
 }

@@ -1,11 +1,14 @@
 package com.blueDragon.Convenience.Service;
 
+import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
 import com.blueDragon.Convenience.Exception.RecommendationEmptyException;
 import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.*;
+import com.blueDragon.Convenience.Repository.ProductLikeRepository;
+import com.blueDragon.Convenience.Repository.ProductRepository;
 import com.blueDragon.Convenience.Repository.RecommendationRepository;
 import com.blueDragon.Convenience.Repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 public class RecommendationService {
     private final ProductService productService;
     private final UserRepository userRepository;
+    private final ProductLikeRepository productLikeRepository;
     private final RecommendationRepository recommendationRepository;
     private final S3Uploader s3Uploader;
 
@@ -82,7 +86,15 @@ public class RecommendationService {
         if (recommendBoardList.isEmpty()) {
             throw new RecommendationEmptyException("비어있습니다.");
         }
-        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+        return recommendBoardList.stream().map(recommendBoard -> {
+            ResponseRecommendationDto dto = ResponseRecommendationDto.entityToDto(recommendBoard);
+            dto.setProductList(recommendBoard.getProductList().stream().map(product -> {
+                ProductDto productDto = ProductDto.entityToDto(product);
+                productDto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+                return productDto;
+            }).collect(Collectors.toList()));
+            return dto;  // 수정된 dto 객체를 반환해야 합니다.
+        }).collect(Collectors.toList());
     }
 
     public List<ResponseRecommendationDto> getLikedRecommendationByUser(String username) {
@@ -106,6 +118,12 @@ public class RecommendationService {
                 .orElseThrow(() -> new RecommendationNotExistException("존재하지 않는 레시피입니다."));
 
         System.out.println(recommendBoard.getProductList());
-        return ResponseRecommendationDto.entityToCreateDto(recommendBoard);
+        ResponseRecommendationDto dto = ResponseRecommendationDto.entityToDto(recommendBoard);
+        dto.setProductList(recommendBoard.getProductList().stream().map(product -> {
+            ProductDto productDto = ProductDto.entityToDto(product);
+            productDto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+            return productDto;
+        }).collect(Collectors.toList()));
+        return dto;  // 수정된 dto 객체를 반환해야 합니다.
     }
 }

@@ -20,7 +20,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p ORDER BY p.id DESC")
     List<Product> findAllProductsOrderByIdDesc();
 
+    @Query("SELECT pl.product FROM ProductLike pl WHERE pl.user = :user")
+    List<Product> findLikedProductsByUser(@Param("user") User user);
     @Query("SELECT pl.product FROM ProductLike pl WHERE pl.user.username = :username")
     List<Product> findLikedProductsByUser(@Param("username") String username);
-
 }

@@ -43,10 +43,12 @@ public class RecommendBoard extends BaseEntity{
     @Column(name = "total_price")
     private Integer totalPrice; //레시피 총 가격
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recommend_board_id") // 추천 보드와 제품을 연결하는 외래 키
     private List<Product> productList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recommendBoard", cascade = CascadeType.ALL)  // Reference the field name in RecommendLike
     private List<RecommendLike> recommendLikes = new ArrayList<>();
 
