@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -70,6 +71,23 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getLikedProductsByUser(@Valid @AuthenticationPrincipal User user) {
         List<ProductDto> list = productService.getLikedProductsByUser(user.getUsername());
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<ResponseDTO<?>> getProductByPopular() {
+        List<ProductDto> list = productService.getProductByPopular();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+
+    @GetMapping("/{category}")
+    public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable String category) {
+        List<ProductDto> list = productService.getProductByCategory(category);
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));

@@ -1,7 +1,10 @@
 package com.blueDragon.Convenience.Service;
 
-import com.blueDragon.Convenience.Model.ConvenienceType;
+import com.blueDragon.Convenience.Model.ConvenienceEntity;
+import com.blueDragon.Convenience.Model.FoodTypeEntity;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Repository.ConvenienceEntityRepository;
+import com.blueDragon.Convenience.Repository.FoodTypeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -16,11 +19,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class SevenProductService extends ProductServiceBase {
-
+    private ConvenienceEntityRepository convenienceEntityRepository;
     private static final String SEVEN_URL = "https://www.7-eleven.co.kr/product/presentList.asp";
 
-    public SevenProductService(ProductRepository productRepository) {
-        super(productRepository);
+    public SevenProductService(ProductRepository productRepository, FoodTypeRepository foodTypeRepository) {
+        super(foodTypeRepository, productRepository);
     }
 
     @Override
@@ -34,11 +37,10 @@ public class SevenProductService extends ProductServiceBase {
 
             // Collect all product elements
             List<WebElement> productElements = driver.findElements(By.cssSelector(".pic_product"));
-            saveUniqueProductsWithImages(productElements, sevenProducts, ConvenienceType.Seven);
+            saveUniqueProductsWithImages(productElements, sevenProducts);
 
         } catch (Exception e) {
-            System.err.println("An error occurred while processing products from 7-Eleven.");
-            e.printStackTrace();
+            log.error("An error occurred while processing products from 7-Eleven.", e);
         } finally {
             driver.quit();
         }
@@ -54,10 +56,11 @@ public class SevenProductService extends ProductServiceBase {
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", moreButton);
                 Thread.sleep(3000); // Wait for products to load
             } catch (NoSuchElementException | TimeoutException e) {
-                System.out.println("No more 'More' button found. All products loaded.");
+                log.info("No more 'More' button found. All products loaded.");
                 break;
             }
         }
+        Thread.sleep(3000);  // Additional wait for page stabilization
     }
 
     @Override
@@ -84,7 +87,7 @@ public class SevenProductService extends ProductServiceBase {
         }
     }
 
-    private void saveUniqueProductsWithImages(List<WebElement> productElements, List<Product> productsList, ConvenienceType storeType) {
+    private void saveUniqueProductsWithImages(List<WebElement> productElements, List<Product> productsList) {
         List<Product> newProducts = new ArrayList<>();
         for (WebElement productElement : productElements) {
             try {
@@ -99,16 +102,27 @@ public class SevenProductService extends ProductServiceBase {
 
                 // Check for duplicates
                 if (productRepository.existsByNameAndPrice(name, price)) {
-                    System.out.println("Duplicate product found: " + name + ", Price: " + price);
+                    log.info("Duplicate product found: " + name + ", Price: " + price);
                     continue;
                 }
 
-                List<ConvenienceType> availableAt = List.of(storeType);
-                Product product = Product.customBuilder(name, price, availableAt, List.of(classifyFoodTypeByKeywords(name)), imageUrl);
-                newProducts.add(product);
+                ConvenienceEntity seven = convenienceEntityRepository.findByName("Seven");
+                if (seven == null) {
+                    log.error("ConvenienceEntity for 'Seven' not found.");
+                    continue;
+                }
 
+                List<String> availableAt = new ArrayList<>();
+                availableAt.add(String.valueOf(seven));  // Add the ConvenienceEntity for "Seven"
+
+                FoodTypeEntity foodType = classifyFoodTypeByKeywords(name);
+
+                if (foodType != null) {
+                    Product product = Product.customBuilder(name, price, availableAt, List.of(String.valueOf(foodType)), imageUrl);
+                    newProducts.add(product);
+                }
             } catch (StaleElementReferenceException e) {
-                System.err.println("Stale element encountered. Skipping this element.");
+                log.error("Stale element encountered. Skipping this element.");
             }
         }
         productRepository.saveAll(newProducts);

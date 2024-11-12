@@ -1,19 +1,21 @@
 package com.blueDragon.Convenience.Model;
 
+
 import com.blueDragon.Convenience.Converter.ConvenienceTypeListConverter;
 import com.blueDragon.Convenience.Converter.FoodTypeListConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table
 @Getter
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,36 +27,40 @@ public class Product {
     @Column
     private String price;
 
-    @Convert(converter = ConvenienceTypeListConverter.class) // 컨버터 적용
-    private List<ConvenienceType> availableAt;
+    //@JsonIgnore
+    //@OneToMany(cascade = CascadeType.ALL)
+    @Convert(converter = ConvenienceTypeListConverter.class)
+    @Column(name = "availableAt")
+    private List<String> availableAt = new ArrayList<>();
 
-    @Convert(converter = FoodTypeListConverter.class) // 컨버터 적용
-    private List<FoodType> foodTypes;
+    @JsonIgnore
+    @Convert(converter = FoodTypeListConverter.class)
+    //@OneToMany(cascade = CascadeType.ALL)
+    private List<String> foodTypes = new ArrayList<>();
 
     @Column
     private String imageUrl;
 
-    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductLike> productLikes = new ArrayList<>();
-
 
     @ManyToOne
     @JoinColumn(name = "recommend_board_id")
     private RecommendBoard recommendBoard;
 
 
-    public static Product customBuilder(String name, String price, List<ConvenienceType> availableAt, List<FoodType> foodTypes, String imageUrl) {
+    @Builder
+    public static Product customBuilder(String name, String price, List<String> availableAt, List<String> foodTypes, String imageUrl) {
         return Product.builder()
                 .name(name)
                 .price(price)
                 .availableAt(availableAt)
-                .foodTypes(foodTypes)
+                .foodTypes((foodTypes))
                 .imageUrl(imageUrl)
                 .build();
     }
 
-    public Product setAvailableAt(List<ConvenienceType> availableAt) {
+    public Product setAvailableAt(List<String> availableAt) {
         this.availableAt = availableAt;
         return this;
     }
