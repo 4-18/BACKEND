@@ -2,12 +2,14 @@ package com.blueDragon.Convenience.Controller;
 
 
 import com.blueDragon.Convenience.Code.ResponseCode;
+import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
 import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Service.RecommendationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -46,6 +48,18 @@ public class RecommendationController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION, res));
+    }
+
+    @GetMapping("/price/{price}")
+    @Operation(summary = "레시피 리스트 - 가격순", description = "레시피 리스트를 가격순으로 필터링합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    public ResponseEntity<ResponseDTO<?>> getProductsByPrice(
+            @Parameter(required = true, description = "기준이 되는 금액")
+            @PathVariable int price) {
+        List<ResponseRecommendationDto> list = recommendationService.getProductByPrice(price);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
     }
 
     @GetMapping("/liked")

@@ -56,6 +56,7 @@ public class ResponseRecommendationDto {
                 .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
                 .foodTypes(recommendBoard.getFoodTypes())
                 .availableAt(recommendBoard.getAvailableAt())
+                .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
                 .build();
     }

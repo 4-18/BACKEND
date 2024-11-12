@@ -37,18 +37,15 @@ public class RecommendBoard extends BaseEntity{
     private String imageUrl;
 
 
-    @JsonIgnore
-    @Builder.Default
+    //@JsonIgnore
     //@OneToMany(cascade = CascadeType.ALL)
     @Convert(converter = ConvenienceTypeListConverter.class)
     @Column(name = "availableAt")
     private List<String> availableAt = new ArrayList<>();
 
     @JsonIgnore
-    @Builder.Default
-    //@OneToMany(cascade = CascadeType.ALL)
     @Convert(converter = FoodTypeListConverter.class)
-    @Column(name = "foodTypes")
+    //@OneToMany(cascade = CascadeType.ALL)
     private List<String> foodTypes = new ArrayList<>();
 
 
