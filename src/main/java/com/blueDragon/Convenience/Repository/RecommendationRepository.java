@@ -30,4 +30,8 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query("SELECT p FROM RecommendBoard p WHERE p.totalPrice <= :maxPrice ORDER BY p.totalPrice DESC")
     List<RecommendBoard> findRecommendBoardsByMaxTotalPrice(@Param("maxPrice") int maxPrice);
 
+    @Query(value = "SELECT * FROM RecommendBoard p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
+    List<RecommendBoard> findByFoodType(@Param("foodType") String foodType);
+
+
 }
