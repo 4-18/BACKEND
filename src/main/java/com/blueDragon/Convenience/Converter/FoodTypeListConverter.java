@@ -1,36 +1,23 @@
 package com.blueDragon.Convenience.Converter;
 
-import com.blueDragon.Convenience.Model.ConvenienceType;
-import com.blueDragon.Convenience.Model.FoodType;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.blueDragon.Convenience.Model.FoodTypeEntity;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Converter
-public class FoodTypeListConverter implements AttributeConverter<List<FoodType>, String> {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+public class FoodTypeListConverter implements AttributeConverter<List<String>, String> {
 
     @Override
-    public String convertToDatabaseColumn(List<FoodType> attribute) {
-        try {
-            return objectMapper.writeValueAsString(attribute); // JSON 배열로 변환
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting list to JSON", e);
-        }
+    public String convertToDatabaseColumn(List<String> attribute) {
+        return attribute != null ? String.join(",", attribute) : "";
     }
 
     @Override
-    public List<FoodType> convertToEntityAttribute(String dbData) {
-        try {
-            return objectMapper.readValue(dbData, new TypeReference<List<FoodType>>() {});
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting JSON to list", e);
-        }
+    public List<String> convertToEntityAttribute(String dbData) {
+        return dbData != null && !dbData.isEmpty() ? Arrays.asList(dbData.split(",")) : new ArrayList<>();
     }
 }

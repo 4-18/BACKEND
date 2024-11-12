@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.BAD_REQUEST, errors));
     }
 
+    @ExceptionHandler(CategoryInvalidValueException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCategoryInvalidValueException(CategoryInvalidValueException ex) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_CATEGORY_VALUE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_CATEGORY_VALUE));
+    }
+
 
     @ExceptionHandler(DuplicateLoginIdException.class)
     protected ResponseEntity<ErrorResponseDTO> handleDuplicateLoginIdException(final DuplicateLoginIdException e) {

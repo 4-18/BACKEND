@@ -1,6 +1,6 @@
 package com.blueDragon.Convenience.Dto.Product;
 
-import com.blueDragon.Convenience.Model.ConvenienceType;
+import com.blueDragon.Convenience.Model.ConvenienceEntity;
 import com.blueDragon.Convenience.Model.Product;
 import lombok.*;
 
@@ -27,11 +27,11 @@ public class ProductDto {
                 .price(product.getPrice())
                 .imageUrl(product.getImageUrl())
                 .foodType(product.getFoodTypes().toString())
-                .availableAt(availableAtToString(product.getAvailableAt()))
+                .availableAt((product.getAvailableAt()))
                 .build();
     }
 
-    public static List<String> availableAtToString(List<ConvenienceType> availableAt) {
-        return availableAt.stream().map((Enum::toString)).collect(Collectors.toList());
+    public static List<String> availableAtToString(List<ConvenienceEntity> availableAt) {
+        return availableAt.stream().map((Object::toString)).collect(Collectors.toList());
     }
 }

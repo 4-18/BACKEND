@@ -1,7 +1,9 @@
 package com.blueDragon.Convenience.Model;
 
+
 import com.blueDragon.Convenience.Converter.ConvenienceTypeListConverter;
 import com.blueDragon.Convenience.Converter.FoodTypeListConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,11 +36,21 @@ public class RecommendBoard extends BaseEntity{
     @Column
     private String imageUrl;
 
-    @Convert(converter = ConvenienceTypeListConverter.class) // 컨버터 적용
-    private List<ConvenienceType> availableAt;
 
-    @Convert(converter = FoodTypeListConverter.class) // 컨버터 적용
-    private List<FoodType> foodTypes;
+    @JsonIgnore
+    @Builder.Default
+    //@OneToMany(cascade = CascadeType.ALL)
+    @Convert(converter = ConvenienceTypeListConverter.class)
+    @Column(name = "availableAt")
+    private List<String> availableAt = new ArrayList<>();
+
+    @JsonIgnore
+    @Builder.Default
+    //@OneToMany(cascade = CascadeType.ALL)
+    @Convert(converter = FoodTypeListConverter.class)
+    @Column(name = "foodTypes")
+    private List<String> foodTypes = new ArrayList<>();
+
 
     @Column(name = "total_price")
     private Integer totalPrice; //레시피 총 가격

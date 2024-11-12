@@ -43,8 +43,8 @@ public class RecommendationService {
 
         List<Product> productList = productService.getProductFromDto(recommendationDto.getProductList());
         Integer totalPrice = productService.sumProductPrices(productList);
-        List<FoodType> foodTypes = productService.combineFoodTypes(productList);
-        List<ConvenienceType> availableAt = productService.combineConvenienceTypes(productList);
+        List<String> foodTypes = productService.combineFoodTypes(productList);
+        List<String> availableAt = productService.combineConvenienceTypes(productList);
         List<String> urls = files.stream().map((multipartFile -> {
             try {
                 return s3Uploader.upload(multipartFile, "recommend");
