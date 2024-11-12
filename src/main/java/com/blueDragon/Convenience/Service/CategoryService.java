@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 public class CategoryService {
     private final FoodTypeRepository foodTypeRepository;
 
-    public FoodTypeEntity getProductByCategory(String category) {
+    public boolean getProductByCategory(String category) {
         try {
             // Try to find the corresponding FoodType enum
-            return foodTypeRepository.findByName(category);
+            return foodTypeRepository.existsByName(category);
         } catch (IllegalArgumentException e) {
             // Throw custom exception if the category is invalid
             throw new CategoryInvalidValueException("Invalid category: " + category);

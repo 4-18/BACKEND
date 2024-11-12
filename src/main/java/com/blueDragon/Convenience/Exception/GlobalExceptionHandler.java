@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CategoryInvalidValueException.class)
-    public ResponseEntity<ErrorResponseDTO> handleCategoryInvalidValueException(CategoryInvalidValueException ex) {
+    public ResponseEntity<ErrorResponseDTO> handleCategoryInvalidValueException(final CategoryInvalidValueException ex) {
         return ResponseEntity
                 .status(ErrorCode.INVALID_CATEGORY_VALUE.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.INVALID_CATEGORY_VALUE));

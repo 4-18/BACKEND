@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "GROUP BY p ORDER BY COUNT(pl) DESC")
     List<Product> findProductsOrderedByLikes();
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.foodTypes f WHERE f IN :foodTypes")
-    List<Product> findByFoodTypes(@Param("foodTypes") List<FoodTypeEntity> foodTypes);
+    @Query(value = "SELECT * FROM Product p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
+    List<Product> findByFoodType(@Param("foodType") String foodType);
 
 }
