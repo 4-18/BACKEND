@@ -121,4 +121,10 @@ public class ProductService {
         }
     }
 
+    public ProductDto getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotExistException("존재하지 않는 상품입니다."));
+
+        return ProductDto.entityToDto(product);
+    }
 }
