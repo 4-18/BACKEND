@@ -73,21 +73,6 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotExistException("존재하지 않는 상품 아이디입니다.")))).collect(Collectors.toList());
     }
 
-    public List<String> combineFoodTypes(List<Product> products) {
-        return products.stream()
-                .flatMap(product -> product.getFoodTypes().stream()) // Assuming each Product has a List<FoodType>
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-
-    public List<String> combineConvenienceTypes(List<Product> products) {
-        return products.stream()
-                .flatMap(product -> product.getAvailableAt().stream()) // Assuming each Product has a List<FoodType>
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
 
     public int sumProductPrices(List<Product> products) {
         return products.stream()
