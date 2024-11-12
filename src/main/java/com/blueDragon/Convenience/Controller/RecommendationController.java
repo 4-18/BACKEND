@@ -53,10 +53,18 @@ public class RecommendationController {
     @GetMapping("/price/{price}")
     @Operation(summary = "레시피 리스트 - 가격순", description = "레시피 리스트를 가격순으로 필터링합니다.")
     @ApiResponse(responseCode = "200", description = "성공")
-    public ResponseEntity<ResponseDTO<?>> getProductsByPrice(
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByPrice(
             @Parameter(required = true, description = "기준이 되는 금액")
             @PathVariable int price) {
         List<ResponseRecommendationDto> list = recommendationService.getProductByPrice(price);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByCategory(@PathVariable String category) {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByCategory(category);
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));

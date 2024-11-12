@@ -97,6 +97,10 @@ public class ProductService {
         if (categoryService.getProductByCategory(category)) {
             // Get products by food type and return mapped DTO list
             List<Product> products = productRepository.findByFoodType(category);
+            if (products.isEmpty()) {
+                throw new EmptyException("요청은 잘 됐는데 빔");
+            }
+
             return products.stream().map(product -> {
                 ProductDto dto = ProductDto.entityToDto(product);
                 dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));

@@ -3,10 +3,7 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
-import com.blueDragon.Convenience.Exception.EmptyException;
-import com.blueDragon.Convenience.Exception.RecommendationEmptyException;
-import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
-import com.blueDragon.Convenience.Exception.UserNotExistException;
+import com.blueDragon.Convenience.Exception.*;
 import com.blueDragon.Convenience.Model.*;
 import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
@@ -136,5 +133,23 @@ public class RecommendationService {
             throw new EmptyException("비어있습니다.");
         }
         return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+    }
+
+    public List<ResponseRecommendationDto> getRecommendationByCategory(String category) {
+        // Convert category string to FoodType enum
+        if (categoryService.getProductByCategory(category)) {
+            // Get products by food type and return mapped DTO list
+            List<RecommendBoard> recommendBoardList = recommendationRepository.findByFoodType(category);
+            if (recommendBoardList.isEmpty()) {
+                throw new RecommendationEmptyException("요청은 됐는데 빔");
+            }
+
+            return recommendBoardList.stream().map(recommendBoard -> {
+                ResponseRecommendationDto dto = ResponseRecommendationDto.entityToDto(recommendBoard);
+                return dto;
+            }).collect(Collectors.toList());
+        } else {
+            throw new CategoryInvalidValueException("카테고리가 잘못 선택되었습니다.");
+        }
     }
 }
