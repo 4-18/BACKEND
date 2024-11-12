@@ -85,7 +85,7 @@ public class ProductController {
     }
 
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable String category) {
         List<ProductDto> list = productService.getProductByCategory(category);
         return ResponseEntity
@@ -99,6 +99,14 @@ public class ProductController {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable Long id) {
+        ProductDto res = productService.getProductById(id);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT, res));
     }
 
 
