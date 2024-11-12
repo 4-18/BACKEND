@@ -93,6 +93,15 @@ public class ProductController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
 
+    @GetMapping("/convenience/{convenience}")
+    public ResponseEntity<ResponseDTO<?>> getProductByConvenience(@PathVariable("convenience") String name) {
+        List<ProductDto> list = productService.getProductsByConvenience(name);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+
     @GetMapping()
     public String showProducts(Model model) {
         // 크롤링 및 저장된 제품 목록을 가져옴

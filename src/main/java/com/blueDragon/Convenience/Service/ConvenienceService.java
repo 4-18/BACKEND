@@ -1,23 +1,22 @@
 package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Exception.CategoryInvalidValueException;
-import com.blueDragon.Convenience.Model.FoodTypeEntity;
-import com.blueDragon.Convenience.Repository.FoodTypeRepository;
+import com.blueDragon.Convenience.Repository.ConvenienceEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
-    private final FoodTypeRepository foodTypeRepository;
+public class ConvenienceService {
+    private final ConvenienceEntityRepository convenienceEntityRepository;
 
-    public boolean getProductByCategory(String category) {
+    public boolean getCovenience(String name) {
         try {
             // Try to find the corresponding FoodType enum
-            return foodTypeRepository.existsByName(category);
+            return convenienceEntityRepository.existsByName(name);
         } catch (IllegalArgumentException e) {
             // Throw custom exception if the category is invalid
-            throw new CategoryInvalidValueException("Invalid category: " + category);
+            throw new CategoryInvalidValueException("Invalid convenience: " + name);
         }
     }
 }

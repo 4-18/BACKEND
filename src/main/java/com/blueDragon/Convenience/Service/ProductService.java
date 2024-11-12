@@ -1,6 +1,8 @@
 package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
+import com.blueDragon.Convenience.Exception.CategoryInvalidValueException;
+import com.blueDragon.Convenience.Exception.ConvenienceInvalidValueException;
 import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Exception.ProductNotExistException;
 import com.blueDragon.Convenience.Model.ConvenienceEntity;
@@ -23,6 +25,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductLikeRepository productLikeRepository;
     private final CategoryService categoryService;
+    private final ConvenienceService convenienceService;
 
 //    public List<ProductDto> getList(String sort) {
 //
@@ -106,15 +109,31 @@ public class ProductService {
 
     public List<ProductDto> getProductByCategory(String category) {
         // Convert category string to FoodType enum
-        FoodTypeEntity foodType = categoryService.getProductByCategory(category);
+        if (categoryService.getProductByCategory(category)) {
+            // Get products by food type and return mapped DTO list
+            List<Product> products = productRepository.findByFoodType(category);
+            return products.stream().map(product -> {
+                ProductDto dto = ProductDto.entityToDto(product);
+                dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+                return dto;
+            }).collect(Collectors.toList());
+        } else {
+            throw new CategoryInvalidValueException("카테고리가 잘못 선택되었습니다.");
+       }
 
-        // Get products by food type and return mapped DTO list
-        List<Product> products = productRepository.findByFoodTypes((List<FoodTypeEntity>) foodType);
-        return products.stream().map(product -> {
-            ProductDto dto = ProductDto.entityToDto(product);
-            dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
-            return dto;
-        }).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getProductsByConvenience(String name) {
+        if (convenienceService.getCovenience(name)) {
+            List<Product> products = productRepository.findByAvailableAt(name);
+            return products.stream().map(product -> {
+                ProductDto dto = ProductDto.entityToDto(product);
+                dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+                return dto;
+            }).collect(Collectors.toList());
+        } else {
+            throw new ConvenienceInvalidValueException("편의점이 잘못 선택되었습니다.");
+        }
     }
 
 }
