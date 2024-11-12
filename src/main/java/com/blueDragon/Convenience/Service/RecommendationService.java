@@ -3,6 +3,7 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
+import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Exception.RecommendationEmptyException;
 import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
@@ -127,5 +128,13 @@ public class RecommendationService {
             return productDto;
         }).collect(Collectors.toList()));
         return dto;  // 수정된 dto 객체를 반환해야 합니다.
+    }
+
+    public List<ResponseRecommendationDto> getProductByPrice(int price) {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findRecommendBoardsByMaxTotalPrice(price);
+        if (recommendBoardList.isEmpty()) {
+            throw new EmptyException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
     }
 }

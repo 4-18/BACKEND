@@ -45,7 +45,7 @@ public class ProductController {
 
 
     @GetMapping("/price/{price}")
-    @Operation(summary = "상품 리스트 - 가격순", description = "상품 리스트를 가격순으로 불러옵니다.")
+    @Operation(summary = "상품 리스트 - 가격순", description = "상품 리스트를 가격순으로 필터링합니다.")
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getProductsByPrice(
             @Parameter(required = true, description = "기준이 되는 금액")
