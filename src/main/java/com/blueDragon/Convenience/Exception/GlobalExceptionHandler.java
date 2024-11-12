@@ -102,4 +102,11 @@ public class GlobalExceptionHandler {
                 .status(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY, null));
     }
+
+    @ExceptionHandler(ConvenienceInvalidValueException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleConvenienceInvalidValueException(final ConvenienceInvalidValueException e) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_CONVENIENCE_VALUE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_CONVENIENCE_VALUE));
+    }
 }

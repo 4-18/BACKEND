@@ -42,6 +42,7 @@ public enum ErrorCode {
 
     INVALID_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 값입니다."),
     INVALID_CATEGORY_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 카테고리 값입니다."),
+    INVALID_CONVENIENCE_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 편의점 값입니다."),
 
 
             ;

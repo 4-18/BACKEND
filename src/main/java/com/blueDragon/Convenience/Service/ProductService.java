@@ -2,6 +2,7 @@ package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Exception.CategoryInvalidValueException;
+import com.blueDragon.Convenience.Exception.ConvenienceInvalidValueException;
 import com.blueDragon.Convenience.Exception.EmptyException;
 import com.blueDragon.Convenience.Exception.ProductNotExistException;
 import com.blueDragon.Convenience.Model.ConvenienceEntity;
@@ -24,6 +25,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductLikeRepository productLikeRepository;
     private final CategoryService categoryService;
+    private final ConvenienceService convenienceService;
 
 //    public List<ProductDto> getList(String sort) {
 //
@@ -119,7 +121,19 @@ public class ProductService {
             throw new CategoryInvalidValueException("카테고리가 잘못 선택되었습니다.");
        }
 
+    }
 
+    public List<ProductDto> getProductsByConvenience(String name) {
+        if (convenienceService.getCovenience(name)) {
+            List<Product> products = productRepository.findByAvailableAt(name);
+            return products.stream().map(product -> {
+                ProductDto dto = ProductDto.entityToDto(product);
+                dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+                return dto;
+            }).collect(Collectors.toList());
+        } else {
+            throw new ConvenienceInvalidValueException("편의점이 잘못 선택되었습니다.");
+        }
     }
 
 }

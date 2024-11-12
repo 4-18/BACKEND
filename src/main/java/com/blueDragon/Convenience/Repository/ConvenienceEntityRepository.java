@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConvenienceEntityRepository extends JpaRepository<ConvenienceEntity, Long> {
     ConvenienceEntity findByName(String name);
+    boolean existsByName(String name);
 }

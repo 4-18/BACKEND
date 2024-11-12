@@ -33,4 +33,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM Product p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
     List<Product> findByFoodType(@Param("foodType") String foodType);
 
+    @Query(value = "SELECT * FROM Product p WHERE FIND_IN_SET(:availableAt, p.availableAt) > 0", nativeQuery = true)
+    List<Product> findByAvailableAt(@Param("availableAt") String availableAt);
 }
