@@ -28,6 +28,7 @@ public class ProductDto {
                 .imageUrl(product.getImageUrl())
                 .foodType(product.getFoodTypes().toString())
                 .availableAt((product.getAvailableAt()))
+                .countLikes(product.getProductLikes().size())
                 .build();
     }
 
