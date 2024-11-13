@@ -29,6 +29,8 @@ import java.util.List;
 public class RecommendationController {
     private final RecommendationService recommendationService;
 
+    @Operation(summary = "레시피 작성", description = "레시피 추천글을 작성합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> RecommendationRegister(@Valid @RequestPart("createRecommendationDto")RequestRecommendationDto recommendationDto,
                                                     @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthenticationPrincipal User user) {

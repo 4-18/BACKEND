@@ -4,6 +4,7 @@ import com.blueDragon.Convenience.Code.ResponseCode;
 import com.blueDragon.Convenience.Dto.Response.ResponseDTO;
 import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Service.ProductLikeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "상품 평가 API")
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductLikeController {
