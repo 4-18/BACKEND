@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponseDTO(ErrorCode.BAD_REQUEST, errors));
     }
 
+    @ExceptionHandler(CategoryInvalidValueException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCategoryInvalidValueException(final CategoryInvalidValueException ex) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_CATEGORY_VALUE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_CATEGORY_VALUE));
+    }
+
 
     @ExceptionHandler(DuplicateLoginIdException.class)
     protected ResponseEntity<ErrorResponseDTO> handleDuplicateLoginIdException(final DuplicateLoginIdException e) {
@@ -94,5 +101,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RECOMMENDATION_EMPTY, null));
+    }
+
+    @ExceptionHandler(ConvenienceInvalidValueException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleConvenienceInvalidValueException(final ConvenienceInvalidValueException e) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_CONVENIENCE_VALUE.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.INVALID_CONVENIENCE_VALUE));
     }
 }

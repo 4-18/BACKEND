@@ -37,12 +37,8 @@ public class ResponseRecommendationDto {
                 .countLikes(0)
                 .countComments(0)
                 .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
-                .foodTypes(recommendBoard.getFoodTypes().stream()
-                        .map(FoodType::name) // Convert FoodType enum values to strings
-                        .collect(Collectors.toList()))
-                .availableAt(recommendBoard.getAvailableAt().stream()
-                        .map(ConvenienceType::name)
-                        .collect(Collectors.toList()))
+                .foodTypes(recommendBoard.getFoodTypes())
+                .availableAt(recommendBoard.getAvailableAt())
                 .imageUrls(recommendBoard.getImageUrl())
                 .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
                 .build();
@@ -58,12 +54,9 @@ public class ResponseRecommendationDto {
                 .countLikes(recommendBoard.getRecommendLikes().size())
                 .countComments(0)
                 .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
-                .foodTypes(recommendBoard.getFoodTypes().stream()
-                        .map(FoodType::name) // Convert FoodType enum values to strings
-                        .collect(Collectors.toList()))
-                .availableAt(recommendBoard.getAvailableAt().stream()
-                        .map(ConvenienceType::name)
-                        .collect(Collectors.toList()))
+                .foodTypes(recommendBoard.getFoodTypes())
+                .availableAt(recommendBoard.getAvailableAt())
+                .productList(recommendBoard.getProductList().stream().map((ProductDto::entityToDto)).collect(Collectors.toList()))
                 .imageUrls(recommendBoard.getImageUrl())
                 .build();
     }

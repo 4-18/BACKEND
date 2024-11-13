@@ -1,5 +1,6 @@
 package com.blueDragon.Convenience.Repository;
 
+import com.blueDragon.Convenience.Model.FoodTypeEntity;
 import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findLikedProductsByUser(@Param("user") User user);
     @Query("SELECT pl.product FROM ProductLike pl WHERE pl.user.username = :username")
     List<Product> findLikedProductsByUser(@Param("username") String username);
+
+    @Query("SELECT p FROM Product p LEFT JOIN ProductLike pl ON pl.product = p " +
+            "GROUP BY p ORDER BY COUNT(pl) DESC")
+    List<Product> findProductsOrderedByLikes();
+
+    @Query(value = "SELECT * FROM Product p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
+    List<Product> findByFoodType(@Param("foodType") String foodType);
+
+    @Query(value = "SELECT * FROM Product p WHERE FIND_IN_SET(:availableAt, p.availableAt) > 0", nativeQuery = true)
+    List<Product> findByAvailableAt(@Param("availableAt") String availableAt);
 }

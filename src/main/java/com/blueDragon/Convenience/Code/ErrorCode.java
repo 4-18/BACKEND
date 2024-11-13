@@ -41,6 +41,8 @@ public enum ErrorCode {
     RECOMMENDATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 레시피가 존재하지 않습니다."),
 
     INVALID_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 값입니다."),
+    INVALID_CATEGORY_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 카테고리 값입니다."),
+    INVALID_CONVENIENCE_VALUE(HttpStatus.NOT_ACCEPTABLE, "잘못된 편의점 값입니다."),
 
 
             ;

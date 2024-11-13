@@ -3,9 +3,7 @@ package com.blueDragon.Convenience.Service;
 import com.blueDragon.Convenience.Dto.Product.ProductDto;
 import com.blueDragon.Convenience.Dto.Recommendation.RequestRecommendationDto;
 import com.blueDragon.Convenience.Dto.Recommendation.ResponseRecommendationDto;
-import com.blueDragon.Convenience.Exception.RecommendationEmptyException;
-import com.blueDragon.Convenience.Exception.RecommendationNotExistException;
-import com.blueDragon.Convenience.Exception.UserNotExistException;
+import com.blueDragon.Convenience.Exception.*;
 import com.blueDragon.Convenience.Model.*;
 import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
@@ -32,6 +30,8 @@ public class RecommendationService {
     private final UserRepository userRepository;
     private final ProductLikeRepository productLikeRepository;
     private final RecommendationRepository recommendationRepository;
+    private final ConvenienceService convenienceService;
+    private final CategoryService categoryService;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -43,8 +43,8 @@ public class RecommendationService {
 
         List<Product> productList = productService.getProductFromDto(recommendationDto.getProductList());
         Integer totalPrice = productService.sumProductPrices(productList);
-        List<FoodType> foodTypes = productService.combineFoodTypes(productList);
-        List<ConvenienceType> availableAt = productService.combineConvenienceTypes(productList);
+        List<String> foodTypes = categoryService.combineFoodTypes(productList);
+        List<String> availableAt = convenienceService.combineConvenienceTypes(productList);
         List<String> urls = files.stream().map((multipartFile -> {
             try {
                 return s3Uploader.upload(multipartFile, "recommend");
@@ -125,5 +125,31 @@ public class RecommendationService {
             return productDto;
         }).collect(Collectors.toList()));
         return dto;  // 수정된 dto 객체를 반환해야 합니다.
+    }
+
+    public List<ResponseRecommendationDto> getProductByPrice(int price) {
+        List<RecommendBoard> recommendBoardList = recommendationRepository.findRecommendBoardsByMaxTotalPrice(price);
+        if (recommendBoardList.isEmpty()) {
+            throw new EmptyException("비어있습니다.");
+        }
+        return recommendBoardList.stream().map((ResponseRecommendationDto::entityToDto)).collect(Collectors.toList());
+    }
+
+    public List<ResponseRecommendationDto> getRecommendationByCategory(String category) {
+        // Convert category string to FoodType enum
+        if (categoryService.getProductByCategory(category)) {
+            // Get products by food type and return mapped DTO list
+            List<RecommendBoard> recommendBoardList = recommendationRepository.findByFoodType(category);
+            if (recommendBoardList.isEmpty()) {
+                throw new RecommendationEmptyException("요청은 됐는데 빔");
+            }
+
+            return recommendBoardList.stream().map(recommendBoard -> {
+                ResponseRecommendationDto dto = ResponseRecommendationDto.entityToDto(recommendBoard);
+                return dto;
+            }).collect(Collectors.toList());
+        } else {
+            throw new CategoryInvalidValueException("카테고리가 잘못 선택되었습니다.");
+        }
     }
 }

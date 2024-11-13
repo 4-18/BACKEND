@@ -36,7 +36,7 @@ public enum ResponseCode {
     /**
      * Product
      */
-
+    SUCCESS_RETRIEVE_PRODUCT(HttpStatus.OK, "상품을 성공적으로 불러왔습니다."),
     SUCCESS_RETRIEVE_PRODUCT_LIST(HttpStatus.OK, "상품 리스트를 성공적으로 불러왔습니다."),
     SUCCESS_PRODUCT_EMPTY(HttpStatus.OK, "요청은 성공했으나, 상품이 존재하지 않습니다."),
 

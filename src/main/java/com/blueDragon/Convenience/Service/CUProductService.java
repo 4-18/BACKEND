@@ -1,24 +1,27 @@
 package com.blueDragon.Convenience.Service;
 
-import com.blueDragon.Convenience.Model.ConvenienceType;
+import com.blueDragon.Convenience.Model.ConvenienceEntity;
+import com.blueDragon.Convenience.Model.FoodTypeEntity;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Repository.ConvenienceEntityRepository;
+import com.blueDragon.Convenience.Repository.FoodTypeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import org.openqa.selenium.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CUProductService extends ProductServiceBase {
 
     private static final String CU_BASE_URL = "https://cu.bgfretail.com/product/product.do?category=product&depth2=4&depth3=";
     private static final String CU_PB_URL = "https://cu.bgfretail.com/product/pb.do?category=product&depth2=1&sf=N";
+    private ConvenienceEntityRepository convenienceEntityRepository;
 
-    public CUProductService(ProductRepository productRepository) {
-        super(productRepository);
+
+    public CUProductService(ProductRepository productRepository, FoodTypeRepository foodTypeRepository) {
+        super(foodTypeRepository, productRepository);
     }
 
     @Transactional
@@ -34,7 +37,7 @@ public class CUProductService extends ProductServiceBase {
             loadMoreProducts();
 
             List<WebElement> productElements = driver.findElements(By.cssSelector("li.prod_list"));
-            saveUniqueProducts(productElements, pbProducts, ConvenienceType.CU);
+            saveUniqueProducts(productElements, pbProducts, "CU");
 
         } catch (Exception e) {
             System.err.println("An error occurred while processing products from CU PB URL.");
@@ -56,7 +59,7 @@ public class CUProductService extends ProductServiceBase {
                 loadMoreProducts();
 
                 List<WebElement> productElements = driver.findElements(By.cssSelector("li.prod_list"));
-                saveUniqueProducts(productElements, allProducts, ConvenienceType.CU);
+                saveUniqueProducts(productElements, allProducts, "CU");
             }
         } catch (Exception e) {
             System.err.println("An error occurred while processing products from CU.");
@@ -70,11 +73,18 @@ public class CUProductService extends ProductServiceBase {
         Set<String> pbProductNames = getPBProductNames();
         List<Product> allProducts = productRepository.findAll();
 
+        // ConvenienceEntity 객체들을 DB에서 조회
+        String cu = String.valueOf(convenienceEntityRepository.findByName("CU"));
+        String gs = String.valueOf(convenienceEntityRepository.findByName("GS"));
+        String seven = String.valueOf(convenienceEntityRepository.findByName("Seven"));
+
         for (Product product : allProducts) {
             if (pbProductNames.contains(product.getName())) {
-                product.setAvailableAt(List.of(ConvenienceType.CU));
+                // PB 제품인 경우 CU만 포함
+                product.setAvailableAt(new ArrayList<>(Integer.parseInt((cu))));
             } else {
-                product.setAvailableAt(List.of(ConvenienceType.CU, ConvenienceType.GS, ConvenienceType.Seven));
+                // PB가 아닌 제품은 CU, GS, Seven을 포함
+                product.setAvailableAt(new ArrayList<>(List.of(cu, gs, seven)));
             }
             productRepository.save(product);
         }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,7 +45,7 @@ public class ProductController {
 
 
     @GetMapping("/price/{price}")
-    @Operation(summary = "상품 리스트 - 가격순", description = "상품 리스트를 가격순으로 불러옵니다.")
+    @Operation(summary = "상품 리스트 - 가격순", description = "상품 리스트를 가격순으로 필터링합니다.")
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<ResponseDTO<?>> getProductsByPrice(
             @Parameter(required = true, description = "기준이 되는 금액")
@@ -74,6 +75,40 @@ public class ProductController {
                 .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
+
+    @GetMapping("/popular")
+    public ResponseEntity<ResponseDTO<?>> getProductByPopular() {
+        List<ProductDto> list = productService.getProductByPopular();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable String category) {
+        List<ProductDto> list = productService.getProductByCategory(category);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+    @GetMapping("/convenience/{convenience}")
+    public ResponseEntity<ResponseDTO<?>> getProductByConvenience(@PathVariable("convenience") String name) {
+        List<ProductDto> list = productService.getProductsByConvenience(name);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable Long id) {
+        ProductDto res = productService.getProductById(id);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT, res));
+    }
+
 
     @GetMapping()
     public String showProducts(Model model) {

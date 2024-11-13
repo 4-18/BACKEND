@@ -1,5 +1,6 @@
 package com.blueDragon.Convenience.Repository;
 
+import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Model.RecommendBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,13 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     // 내가 쓴 글 불러오기
     @Query("SELECT r FROM RecommendBoard r WHERE r.user.username = :username")
     List<RecommendBoard> findRecommendationByUser(@Param("username") String username);
+
+
+    @Query("SELECT p FROM RecommendBoard p WHERE p.totalPrice <= :maxPrice ORDER BY p.totalPrice DESC")
+    List<RecommendBoard> findRecommendBoardsByMaxTotalPrice(@Param("maxPrice") int maxPrice);
+
+    @Query(value = "SELECT * FROM RecommendBoard p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
+    List<RecommendBoard> findByFoodType(@Param("foodType") String foodType);
+
+
 }
