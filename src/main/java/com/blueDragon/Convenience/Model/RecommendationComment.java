@@ -22,7 +22,7 @@ public class RecommendationComment extends BaseEntity{
     private String comment; //댓글 본문
 
     @ManyToOne
-    @JoinColumn(name = "recommendboard_id", nullable = false) // FK 설정
+    @JoinColumn(name = "recommend_board_id", nullable = false) // FK 설정
     private RecommendBoard recommendBoard; // 필드 이름 확인
 
     //생성 시간은 baseEntity에 존재 (중복되는 코드 줄이기 위함)
