@@ -22,13 +22,13 @@ public class RecommendationCommentService {
     // 댓글 작성
     @Transactional
     public RecommendationCommentDto addComment(Long boardId, RecommendationCommentDto commentDto) {
-        // boardId로 RecommendationBoard 엔티티 조회
-        RecommendBoard recommendboard = recommendationBoardRepository.findById(boardId)
+        // boardId로 RecommendBoard 엔티티 조회
+        RecommendBoard recommendBoard = recommendationBoardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("추천 게시글을 찾을 수 없습니다."));
 
-        // RecommendationComment에 RecommendationBoard 설정
+        // RecommendationComment에 RecommendBoard 설정
         RecommendationComment recommendationComment = RecommendationComment.builder()
-                .recommendBoard(recommendboard) // RecommendationBoard 설정
+                .recommendBoard(recommendBoard) // RecommendBoard 설정
                 .comment(commentDto.getComment())
                 .build();
 
@@ -46,5 +46,40 @@ public class RecommendationCommentService {
         return comments.stream()
                 .map(RecommendationCommentDto::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    // 특정 댓글 조회
+    public RecommendationCommentDto getComment(Long commentId) {
+        RecommendationComment recommendationComment = recommendationCommentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+        return RecommendationCommentDto.entityToDto(recommendationComment);
+    }
+
+    // 댓글 수정
+    @Transactional
+    public RecommendationCommentDto updateComment(Long commentId, RecommendationCommentDto commentDto) {
+        // 댓글 조회
+        RecommendationComment recommendationComment = recommendationCommentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        // 댓글 내용 수정
+        recommendationComment.updateComment(commentDto.getComment());
+
+        // 수정된 댓글 저장
+        recommendationComment = recommendationCommentRepository.save(recommendationComment);
+
+        return RecommendationCommentDto.entityToDto(recommendationComment);
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        // 댓글 존재 여부 확인
+        if (!recommendationCommentRepository.existsById(commentId)) {
+            throw new RuntimeException("댓글을 찾을 수 없습니다.");
+        }
+
+        // 댓글 삭제
+        recommendationCommentRepository.deleteById(commentId);
     }
 }
