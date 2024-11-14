@@ -2,6 +2,7 @@ package com.blueDragon.Convenience.Controller;
 
 import com.blueDragon.Convenience.Dto.Product.ProductCommentDto;
 import com.blueDragon.Convenience.Service.ProductCommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "상품 댓글 API")
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductCommentController {
