@@ -24,6 +24,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
@@ -34,9 +37,10 @@ public class User {
     private List<RecommendLike> recommendLikes = new ArrayList<>();
 
     @Builder(builderMethodName = "signupBuilder")
-    public User(String username, String password, String nickname) {
+    public User(String username, String password, String nickname, String name) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+        this.name = name;
     }
 }
