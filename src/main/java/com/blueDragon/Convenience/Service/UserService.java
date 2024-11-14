@@ -28,6 +28,7 @@ public class UserService {
                 .username(registerUserDto.getUsername())
                 .password(bCryptPasswordEncoder.encode(registerUserDto.getPassword()))
                 .nickname(registerUserDto.getNickname())
+                .name(registerUserDto.getName())
                 .build();
 
         userRepository.save(user);

@@ -12,6 +12,8 @@ public class RegisterUserDto {
     private String username;
     @NotEmpty(message = "비밀번호는 비워둘 수 없습니다.")
     private String password;
-    @NotEmpty(message = "이름은 비워둘 수 없습니다.")
+    @NotEmpty(message = "닉네임은 비워둘 수 없습니다.")
     private String nickname;
+    @NotEmpty(message = "이름은 비워둘 수 없습니다.")
+    private String name;
 }
