@@ -146,12 +146,19 @@ public class RecommendationService {
                 throw new RecommendationEmptyException("요청은 됐는데 빔");
             }
 
-            return recommendBoardList.stream().map(recommendBoard -> {
-                ResponseRecommendationDto dto = ResponseRecommendationDto.entityToDto(recommendBoard);
-                return dto;
-            }).collect(Collectors.toList());
+            return recommendBoardList.stream().map(ResponseRecommendationDto::entityToDto).collect(Collectors.toList());
         } else {
             throw new CategoryInvalidValueException("카테고리가 잘못 선택되었습니다.");
         }
     }
+
+    public List<ResponseRecommendationDto> getRecommendationByConvenience(String name) {
+        if (convenienceService.getCovenience(name)) {
+            List<RecommendBoard> recommendBoardList = recommendationRepository.findByAvailableAt(name);
+            return recommendBoardList.stream().map(ResponseRecommendationDto::entityToDto).collect(Collectors.toList());
+        } else {
+            throw new ConvenienceInvalidValueException("편의점이 잘못 선택되었습니다.");
+        }
+    }
+
 }

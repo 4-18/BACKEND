@@ -72,6 +72,14 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
     }
 
+    @GetMapping("/convenience/{convenience}")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByConvenience(@PathVariable("convenience") String name) {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByConvenience(name);
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
     @GetMapping("/liked")
     @Operation(summary = "내가 좋아요 누른 레시피 불러오기", description = "내가 좋아요 누른 레시피를 불러옵니다.")
     @ApiResponse(responseCode = "200", description = "성공")

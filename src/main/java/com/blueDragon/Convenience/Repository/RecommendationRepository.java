@@ -33,5 +33,8 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query(value = "SELECT * FROM RecommendBoard p WHERE FIND_IN_SET(:foodType, p.foodTypes) > 0", nativeQuery = true)
     List<RecommendBoard> findByFoodType(@Param("foodType") String foodType);
 
+    @Query(value = "SELECT * FROM RecommendBoard p WHERE FIND_IN_SET(:availableAt, p.availableAt) > 0", nativeQuery = true)
+    List<RecommendBoard> findByAvailableAt(@Param("availableAt") String availableAt);
+
 
 }
