@@ -41,7 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable);
-
+        http.cors();
         http.formLogin(AbstractHttpConfigurer::disable);
 
         http.httpBasic(AbstractHttpConfigurer::disable);
