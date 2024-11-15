@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ResponseRecommendationDto {
     private Long id;
-    private Long userId;
+    private String nickname;
     private String title;
     private LocalDateTime createdAt;
     private String content;
@@ -30,7 +30,7 @@ public class ResponseRecommendationDto {
     public static ResponseRecommendationDto entityToCreateDto(RecommendBoard recommendBoard) {
         return ResponseRecommendationDto.builder()
                 .id(recommendBoard.getId())
-                .userId(recommendBoard.getUser().getId())
+                .nickname(recommendBoard.getUser().getNickname())
                 .title(recommendBoard.getTitle())
                 .content(recommendBoard.getContent())
                 .createdAt(recommendBoard.getCreatedAt())
@@ -47,7 +47,7 @@ public class ResponseRecommendationDto {
     public static ResponseRecommendationDto entityToDto(RecommendBoard recommendBoard) {
         return ResponseRecommendationDto.builder()
                 .id(recommendBoard.getId())
-                .userId(recommendBoard.getUser().getId())
+                .nickname(recommendBoard.getUser().getNickname())
                 .title(recommendBoard.getTitle())
                 .content(recommendBoard.getContent())
                 .createdAt(recommendBoard.getCreatedAt())
