@@ -40,18 +40,20 @@ public class RecommendationService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotExistException("존재하지 않는 유저입니다."));
 
-
         List<Product> productList = productService.getProductFromDto(recommendationDto.getProductList());
         Integer totalPrice = productService.sumProductPrices(productList);
         List<String> foodTypes = categoryService.combineFoodTypes(productList);
         List<String> availableAt = convenienceService.combineConvenienceTypes(productList);
-        List<String> urls = files.stream().map((multipartFile -> {
-            try {
-                return s3Uploader.upload(multipartFile, "recommend");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        })).toList();
+        List<String> urls = files.isEmpty() ? List.of() : files.stream()
+                .map(multipartFile -> {
+                    try {
+                        return s3Uploader.upload(multipartFile, "recommend");
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 업로드 중 오류 발생: " + e.getMessage(), e);
+                    }
+                })
+                .toList();
+
 
         RecommendBoard entity = RecommendBoard.builder()
                                 .title(recommendationDto.getTitle())
