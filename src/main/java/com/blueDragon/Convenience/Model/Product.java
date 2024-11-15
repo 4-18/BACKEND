@@ -48,6 +48,9 @@ public class Product {
     @JoinColumn(name = "recommend_board_id")
     private RecommendBoard recommendBoard;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)  // Reference the field name in RecommendLike
+    private List<ProductComment> productComments = new ArrayList<>();
+
 
     @Builder
     public static Product customBuilder(String name, String price, List<String> availableAt, List<String> foodTypes, String imageUrl) {
