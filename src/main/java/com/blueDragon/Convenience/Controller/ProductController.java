@@ -84,6 +84,14 @@ public class ProductController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
     }
 
+    @GetMapping("/comment")
+    public ResponseEntity<ResponseDTO<?>> getProductByCommentPopular() {
+        List<ProductDto> list = productService.getProductByCommentPopular();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_PRODUCT_LIST, list));
+    }
+
 
     @GetMapping("/category/{category}")
     public ResponseEntity<ResponseDTO<?>> getProductByCategory(@PathVariable String category) {

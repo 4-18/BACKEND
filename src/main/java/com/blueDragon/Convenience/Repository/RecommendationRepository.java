@@ -26,6 +26,10 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query("SELECT r FROM RecommendBoard r WHERE r.user.username = :username")
     List<RecommendBoard> findRecommendationByUser(@Param("username") String username);
 
+    // 댓글 수를 내림차순으로 집계
+    @Query("SELECT r FROM RecommendBoard r LEFT JOIN r.recommendComments rc GROUP BY r.id ORDER BY COUNT(rc) DESC")
+    List<RecommendBoard> findAllByOrderByCommentCountDesc();
+
 
     @Query("SELECT p FROM RecommendBoard p WHERE p.totalPrice <= :maxPrice ORDER BY p.totalPrice DESC")
     List<RecommendBoard> findRecommendBoardsByMaxTotalPrice(@Param("maxPrice") int maxPrice);

@@ -8,6 +8,7 @@ import com.blueDragon.Convenience.Exception.ProductNotExistException;
 import com.blueDragon.Convenience.Model.ConvenienceEntity;
 import com.blueDragon.Convenience.Model.FoodTypeEntity;
 import com.blueDragon.Convenience.Model.Product;
+import com.blueDragon.Convenience.Repository.ProductCommentRepository;
 import com.blueDragon.Convenience.Repository.ProductLikeRepository;
 import com.blueDragon.Convenience.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class ProductService {
     private final ProductLikeRepository productLikeRepository;
     private final CategoryService categoryService;
     private final ConvenienceService convenienceService;
+    private final ProductCommentRepository productCommentRepository;
 
 //    public List<ProductDto> getList(String sort) {
 //
@@ -88,6 +90,15 @@ public class ProductService {
         return list.stream().map((product -> {
             ProductDto dto = ProductDto.entityToDto(product);
             dto.setCountLikes(productLikeRepository.countLikesByProductId(product.getId()));
+            return dto;
+        })).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getProductByCommentPopular() {
+        List<Product> list = productRepository.findAllByOrderByCommentCountDesc();
+        return list.stream().map((product -> {
+            ProductDto dto = ProductDto.entityToDto(product);
+            dto.setCountComments(productCommentRepository.countProductCommentsByProductId(product.getId()));
             return dto;
         })).collect(Collectors.toList());
     }

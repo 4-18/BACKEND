@@ -11,4 +11,6 @@ import java.util.List;
 public interface ProductCommentRepository extends JpaRepository<ProductComment, Long> {
     // 특정 상품에 대한 모든 댓글 조회
     List<ProductComment> findByProductId(Long productId);
+
+    int countProductCommentsByProductId(Long productId);
 }
