@@ -58,7 +58,7 @@ public class RecommendBoard extends BaseEntity{
     private List<Product> productList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "recommendBoard", cascade = CascadeType.ALL)  // Reference the field name in RecommendLike
+    @OneToMany(mappedBy = "recommendBoard", cascade = CascadeType.ALL, orphanRemoval = true)  // Reference the field name in RecommendLike
     private List<RecommendLike> recommendLikes = new ArrayList<>();
 
 
