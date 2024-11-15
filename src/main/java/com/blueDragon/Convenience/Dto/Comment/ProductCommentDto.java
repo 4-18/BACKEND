@@ -1,12 +1,10 @@
-package com.blueDragon.Convenience.Dto.Product;
+package com.blueDragon.Convenience.Dto.Comment;
 
 import com.blueDragon.Convenience.Model.ProductComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Builder
 @Getter

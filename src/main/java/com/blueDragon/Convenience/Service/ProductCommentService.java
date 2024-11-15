@@ -1,7 +1,7 @@
 package com.blueDragon.Convenience.Service;
 
-import com.blueDragon.Convenience.Dto.Product.ProductCommentDto;
-import com.blueDragon.Convenience.Dto.Product.ResponseProductCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.ProductCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.ResponseProductCommentDto;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.Product;
 import com.blueDragon.Convenience.Model.ProductComment;

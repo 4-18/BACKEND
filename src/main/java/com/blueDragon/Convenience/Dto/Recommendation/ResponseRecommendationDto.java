@@ -52,7 +52,7 @@ public class ResponseRecommendationDto {
                 .content(recommendBoard.getContent())
                 .createdAt(recommendBoard.getCreatedAt())
                 .countLikes(recommendBoard.getRecommendLikes().size())
-                .countComments(0)
+                .countComments(recommendBoard.getRecommendComments().size())
                 .totalPrice(String.format("%,d", recommendBoard.getTotalPrice()))
                 .foodTypes(recommendBoard.getFoodTypes())
                 .availableAt(recommendBoard.getAvailableAt())

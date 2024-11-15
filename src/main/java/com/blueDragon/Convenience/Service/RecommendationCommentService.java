@@ -1,7 +1,7 @@
 package com.blueDragon.Convenience.Service;
 
-import com.blueDragon.Convenience.Dto.Product.RecommendationCommentDto;
-import com.blueDragon.Convenience.Dto.Product.ResponseRecommendationCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.RecommendationCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.ResponseRecommendationCommentDto;
 import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.RecommendBoard;
 import com.blueDragon.Convenience.Model.RecommendationComment;

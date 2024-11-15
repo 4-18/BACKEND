@@ -1,7 +1,7 @@
 package com.blueDragon.Convenience.Controller;
 
-import com.blueDragon.Convenience.Dto.Product.RecommendationCommentDto;
-import com.blueDragon.Convenience.Dto.Product.ResponseRecommendationCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.RecommendationCommentDto;
+import com.blueDragon.Convenience.Dto.Comment.ResponseRecommendationCommentDto;
 import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Service.RecommendationCommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,4 +1,4 @@
-package com.blueDragon.Convenience.Dto.Product;
+package com.blueDragon.Convenience.Dto.Comment;
 
 import com.blueDragon.Convenience.Model.ProductComment;
 import lombok.Builder;
