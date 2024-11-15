@@ -19,6 +19,7 @@ public class ProductDto {
     private String foodType;
     private String imageUrl;
     private int countLikes;
+    private int countComments;
 
     public static ProductDto entityToDto(Product product) {
         return ProductDto.builder()
@@ -29,6 +30,7 @@ public class ProductDto {
                 .foodType(product.getFoodTypes().toString())
                 .availableAt((product.getAvailableAt()))
                 .countLikes(product.getProductLikes().size())
+                .countComments(product.getProductComments().size())
                 .build();
     }
 

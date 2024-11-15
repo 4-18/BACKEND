@@ -100,6 +100,14 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
     }
 
+    @GetMapping("/comment")
+    public ResponseEntity<ResponseDTO<?>> getRecommendationByCommentPopular() {
+        List<ResponseRecommendationDto> list = recommendationService.getRecommendationByCommentPopular();
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_RETRIEVE_RECOMMENDATION_LIST, list));
+    }
+
     @GetMapping("/newest")
     @Operation(summary = "레시피 리스트 - 최신순", description = "레시피를 최신순으로 불러옵니다.")
     @ApiResponse(responseCode = "200", description = "성공")
