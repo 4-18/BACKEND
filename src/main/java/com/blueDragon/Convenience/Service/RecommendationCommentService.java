@@ -1,10 +1,14 @@
 package com.blueDragon.Convenience.Service;
 
 import com.blueDragon.Convenience.Dto.Product.RecommendationCommentDto;
+import com.blueDragon.Convenience.Dto.Product.ResponseRecommendationCommentDto;
+import com.blueDragon.Convenience.Exception.UserNotExistException;
 import com.blueDragon.Convenience.Model.RecommendBoard;
 import com.blueDragon.Convenience.Model.RecommendationComment;
+import com.blueDragon.Convenience.Model.User;
 import com.blueDragon.Convenience.Repository.RecommendationCommentRepository;
 import com.blueDragon.Convenience.Repository.RecommendationRepository;
+import com.blueDragon.Convenience.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +22,15 @@ public class RecommendationCommentService {
 
     private final RecommendationCommentRepository recommendationCommentRepository;
     private final RecommendationRepository recommendationBoardRepository;
+    private final UserRepository userRepository;
 
     // 댓글 작성
     @Transactional
-    public RecommendationCommentDto addComment(Long boardId, RecommendationCommentDto commentDto) {
+    public RecommendationCommentDto addComment(String username, Long boardId, RecommendationCommentDto commentDto) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotExistException("존재하지 않는 유저입니다."));
+
         // boardId로 RecommendBoard 엔티티 조회
         RecommendBoard recommendBoard = recommendationBoardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("추천 게시글을 찾을 수 없습니다."));
@@ -30,6 +39,7 @@ public class RecommendationCommentService {
         RecommendationComment recommendationComment = RecommendationComment.builder()
                 .recommendBoard(recommendBoard) // RecommendBoard 설정
                 .comment(commentDto.getComment())
+                .user(user)
                 .build();
 
         // 댓글 저장
@@ -38,21 +48,21 @@ public class RecommendationCommentService {
     }
 
     // 특정 추천 게시글의 모든 댓글 조회
-    public List<RecommendationCommentDto> getCommentsByBoardId(Long boardId) {
+    public List<ResponseRecommendationCommentDto> getCommentsByBoardId(Long boardId) {
         // boardId로 댓글 리스트 조회
         List<RecommendationComment> comments = recommendationCommentRepository.findByRecommendBoardId(boardId);
 
         // 댓글 리스트를 DTO로 변환하여 반환
         return comments.stream()
-                .map(RecommendationCommentDto::entityToDto)
+                .map(ResponseRecommendationCommentDto::entityToDto)
                 .collect(Collectors.toList());
     }
 
     // 특정 댓글 조회
-    public RecommendationCommentDto getComment(Long commentId) {
+    public ResponseRecommendationCommentDto getComment(Long commentId) {
         RecommendationComment recommendationComment = recommendationCommentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
-        return RecommendationCommentDto.entityToDto(recommendationComment);
+        return ResponseRecommendationCommentDto.entityToDto(recommendationComment);
     }
 
     // 댓글 수정
