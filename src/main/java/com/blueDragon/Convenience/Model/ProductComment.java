@@ -18,6 +18,11 @@ public class ProductComment extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user")
+    private User user;
+
+
     @Column(length = 100, nullable = false)
     private String comment; //댓글 본문
 
