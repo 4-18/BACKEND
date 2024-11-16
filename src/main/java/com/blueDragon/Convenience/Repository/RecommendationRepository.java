@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RecommendationRepository extends JpaRepository<RecommendBoard, Long> {
@@ -30,7 +31,6 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query("SELECT r FROM RecommendBoard r LEFT JOIN r.recommendComments rc GROUP BY r.id ORDER BY COUNT(rc) DESC")
     List<RecommendBoard> findAllByOrderByCommentCountDesc();
 
-
     @Query("SELECT p FROM RecommendBoard p WHERE p.totalPrice <= :maxPrice ORDER BY p.totalPrice DESC")
     List<RecommendBoard> findRecommendBoardsByMaxTotalPrice(@Param("maxPrice") int maxPrice);
 
@@ -40,5 +40,5 @@ public interface RecommendationRepository extends JpaRepository<RecommendBoard, 
     @Query(value = "SELECT * FROM RecommendBoard p WHERE FIND_IN_SET(:availableAt, p.availableAt) > 0", nativeQuery = true)
     List<RecommendBoard> findByAvailableAt(@Param("availableAt") String availableAt);
 
-
+    Optional<RecommendBoard> findById(Long id);
 }

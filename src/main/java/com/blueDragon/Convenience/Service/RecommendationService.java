@@ -75,6 +75,51 @@ public class RecommendationService {
 
     }
 
+    // 게시글 수정
+    public ResponseRecommendationDto updateRecommendation(Long id, RequestRecommendationDto updateDto, List<MultipartFile> files, String username) {
+        RecommendBoard recommendBoard = recommendationRepository.findById(id)
+                .orElseThrow(() -> new RecommendationNotExistException("해당 게시글이 존재하지 않습니다."));
+
+        if (!recommendBoard.getUser().getUsername().equals(username)) {
+            throw new UserNotExistException("본인의 글만 수정할 수 있습니다.");
+        }
+
+        // 상품 목록 업데이트
+        List<Product> updatedProductList = productService.getProductFromDto(updateDto.getProductList());
+        Integer updatedTotalPrice = productService.sumProductPrices(updatedProductList);
+        List<String> updatedFoodTypes = categoryService.combineFoodTypes(updatedProductList);
+        List<String> updatedAvailableAt = convenienceService.combineConvenienceTypes(updatedProductList);
+
+        // 파일 업로드 처리 (새로운 파일만 업로드)
+        List<String> updatedUrls = files.isEmpty() ? List.of() : files.stream()
+                .map(multipartFile -> {
+                    try {
+                        return s3Uploader.upload(multipartFile, "recommend");
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 업로드 중 오류 발생: " + e.getMessage(), e);
+                    }
+                })
+                .toList();
+
+        // 기존 데이터 업데이트
+        recommendBoard.setTitle(updateDto.getTitle());
+        recommendBoard.setContent(updateDto.getContent());
+        recommendBoard.setImageUrl(String.join(",", updatedUrls)); // 쉼표로 구분된 이미지 URL
+        recommendBoard.setProductList(updatedProductList);
+        recommendBoard.setFoodTypes(updatedFoodTypes);
+        recommendBoard.setAvailableAt(updatedAvailableAt);
+        recommendBoard.setTotalPrice(updatedTotalPrice);
+
+        // Product와 RecommendBoard 관계 업데이트
+        updatedProductList.forEach(product -> product.setRecommendBoard(recommendBoard));
+
+        // 수정된 게시글 저장
+        recommendationRepository.save(recommendBoard);
+
+        // 응답 객체 생성 및 반환
+        return ResponseRecommendationDto.entityToDto(recommendBoard);
+    }
+
     public List<ResponseRecommendationDto> getRecommendationByPopular() {
         List<RecommendBoard> recommendBoardList = recommendationRepository.findAllByOrderByLikeCountDesc();
         if (recommendBoardList.isEmpty()) {
@@ -168,5 +213,4 @@ public class RecommendationService {
             throw new ConvenienceInvalidValueException("편의점이 잘못 선택되었습니다.");
         }
     }
-
 }

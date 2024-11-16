@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table
 @Getter
+@Setter
 @Builder
 public class RecommendBoard extends BaseEntity{
     @Id

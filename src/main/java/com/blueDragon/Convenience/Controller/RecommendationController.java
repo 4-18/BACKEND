@@ -42,6 +42,17 @@ public class RecommendationController {
                 .body(new ResponseDTO<>(ResponseCode.SUCCESS_REGISTER_RECOMMENDATIONS, res));
     }
 
+    @PutMapping("/{recommendation_id}")
+    public ResponseEntity<?> updateRecommendation(@Valid @RequestPart("updateRecommendationDto")RequestRecommendationDto recommendationDto,
+                                                  @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthenticationPrincipal User user,
+                                                  @PathVariable("recommendation_id") Long id) {
+        ResponseRecommendationDto res = recommendationService.updateRecommendation(id, recommendationDto, files, user.getUsername());
+
+        return ResponseEntity
+                .status(ResponseCode.SUCCESS_UPDATE_RECOMMENDATIONS.getStatus().value())
+                .body(new ResponseDTO<>(ResponseCode.SUCCESS_UPDATE_RECOMMENDATIONS, res));
+    }
+
 
     @GetMapping("/{recommendation_id}")
     public ResponseEntity<?> getRecommendationById(@PathVariable("recommendation_id") Long id) {
