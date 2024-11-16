@@ -61,14 +61,14 @@ public class ResponseRecommendationDto {
                 .build();
     }
 
-    // 개행 문자로 String을 나눠 List<String>으로 변환하는 메서드
     private static List<String> splitContentByNewLine(String content) {
         if (content == null || content.isEmpty()) {
             return List.of(); // 빈 리스트 반환
         }
-        return Arrays.stream(content.split("\\n")) // 개행으로 나누기
+        return Arrays.stream(content.split("\\\\n")) // JSON에서 \\n으로 표시된 개행 처리
                 .map(String::trim) // 각 줄 공백 제거
                 .filter(line -> !line.isEmpty()) // 빈 줄 제거
                 .collect(Collectors.toList());
     }
+
 }
